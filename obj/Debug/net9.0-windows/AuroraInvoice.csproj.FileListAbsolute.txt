@@ -206,3 +206,7 @@ e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\Views\ExpenseDialog.baml
 e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\Views\InvoiceDialog.baml
 e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\Views\ExpenseDialog.g.cs
 e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\Views\InvoiceDialog.g.cs
+e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\Views\ErrorLogsPage.baml
+e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\Views\ErrorLogsPage.g.cs
+e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\Controls\SimpleBarChart.baml
+e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\Controls\SimpleBarChart.g.cs

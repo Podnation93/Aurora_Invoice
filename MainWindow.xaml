@@ -84,6 +84,11 @@
                                 Content="Backup &amp; Restore"
                                 Style="{StaticResource NavButton}"
                                 Checked="NavigationButton_Checked"/>
+
+                    <RadioButton x:Name="ErrorLogsNav"
+                                Content="Error Logs"
+                                Style="{StaticResource NavButton}"
+                                Checked="NavigationButton_Checked"/>
                 </StackPanel>
 
                 <!-- Footer Info -->

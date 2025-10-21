@@ -31,6 +31,7 @@ public partial class MainWindow : Window
             "ReportsNav" => new ReportsPage(),
             "SettingsNav" => new SettingsPage(),
             "BackupNav" => new BackupPage(),
+            "ErrorLogsNav" => new ErrorLogsPage(),
             _ => null
         };
 
