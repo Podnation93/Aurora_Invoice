@@ -1,0 +1,105 @@
+<Window x:Class="AuroraInvoice.Views.CustomerDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Customer Details"
+        Height="600"
+        Width="500"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0"
+                  x:Name="HeaderText"
+                  Text="New Customer"
+                  Style="{StaticResource HeaderText}"/>
+
+        <!-- Form -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- Company Name -->
+                <TextBlock Text="Company Name *"
+                          FontWeight="SemiBold"
+                          Margin="0,0,0,8"/>
+                <TextBox x:Name="NameTextBox"
+                        Style="{StaticResource ModernTextBox}"
+                        Margin="0,0,0,16"/>
+
+                <!-- Contact Person -->
+                <TextBlock Text="Contact Person"
+                          FontWeight="SemiBold"
+                          Margin="0,0,0,8"/>
+                <TextBox x:Name="ContactPersonTextBox"
+                        Style="{StaticResource ModernTextBox}"
+                        Margin="0,0,0,16"/>
+
+                <!-- Email -->
+                <TextBlock Text="Email"
+                          FontWeight="SemiBold"
+                          Margin="0,0,0,8"/>
+                <TextBox x:Name="EmailTextBox"
+                        Style="{StaticResource ModernTextBox}"
+                        Margin="0,0,0,16"/>
+
+                <!-- Phone -->
+                <TextBlock Text="Phone"
+                          FontWeight="SemiBold"
+                          Margin="0,0,0,8"/>
+                <TextBox x:Name="PhoneTextBox"
+                        Style="{StaticResource ModernTextBox}"
+                        Margin="0,0,0,16"/>
+
+                <!-- ABN -->
+                <TextBlock Text="ABN (Australian Business Number)"
+                          FontWeight="SemiBold"
+                          Margin="0,0,0,8"/>
+                <TextBox x:Name="ABNTextBox"
+                        Style="{StaticResource ModernTextBox}"
+                        Margin="0,0,0,16"/>
+
+                <!-- Address -->
+                <TextBlock Text="Address"
+                          FontWeight="SemiBold"
+                          Margin="0,0,0,8"/>
+                <TextBox x:Name="AddressTextBox"
+                        Style="{StaticResource ModernTextBox}"
+                        Height="80"
+                        AcceptsReturn="True"
+                        TextWrapping="Wrap"
+                        VerticalScrollBarVisibility="Auto"
+                        Margin="0,0,0,16"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Buttons -->
+        <Grid Grid.Row="2" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="1"
+                   Content="Save"
+                   Style="{StaticResource ModernButton}"
+                   Width="100"
+                   Click="Save_Click"/>
+
+            <Button Grid.Column="3"
+                   Content="Cancel"
+                   Style="{StaticResource SecondaryButton}"
+                   Width="100"
+                   Click="Cancel_Click"/>
+        </Grid>
+    </Grid>
+</Window>

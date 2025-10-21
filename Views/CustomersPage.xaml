@@ -6,8 +6,101 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       d:DesignHeight="800" d:DesignWidth="1000"
       Title="Customers">
+
     <Grid Margin="40,30">
-        <TextBlock Text="Customers Page - Coming Soon"
-                  Style="{StaticResource HeaderText}"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Customers"
+                      Style="{StaticResource HeaderText}"/>
+            <TextBlock Text="Manage your customer database"
+                      Style="{StaticResource SecondaryText}"/>
+        </StackPanel>
+
+        <!-- Action Bar -->
+        <Grid Grid.Row="1" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBox x:Name="SearchBox"
+                    Grid.Column="0"
+                    Style="{StaticResource ModernTextBox}"
+                    Width="300"
+                    HorizontalAlignment="Left"
+                    TextChanged="SearchBox_TextChanged">
+                <TextBox.Tag>
+                    <TextBlock Text="Search customers..."
+                              Foreground="{StaticResource TextSecondaryBrush}"
+                              IsHitTestVisible="False"
+                              Margin="12,10"/>
+                </TextBox.Tag>
+            </TextBox>
+
+            <Button Grid.Column="1"
+                   Content="+ New Customer"
+                   Style="{StaticResource ModernButton}"
+                   Click="NewCustomer_Click"/>
+        </Grid>
+
+        <!-- Customer List -->
+        <Border Grid.Row="2" Style="{StaticResource Card}">
+            <Grid>
+                <DataGrid x:Name="CustomersGrid"
+                         Style="{StaticResource ModernDataGrid}"
+                         SelectionChanged="CustomersGrid_SelectionChanged"
+                         MouseDoubleClick="CustomersGrid_MouseDoubleClick">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                        <DataGridTextColumn Header="Contact Person" Binding="{Binding ContactPerson}" Width="*"/>
+                        <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*"/>
+                        <DataGridTextColumn Header="Phone" Binding="{Binding Phone}" Width="Auto"/>
+                        <DataGridTextColumn Header="ABN" Binding="{Binding ABN}" Width="Auto"/>
+                        <DataGridTemplateColumn Header="Actions" Width="Auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="Edit"
+                                               Style="{StaticResource SecondaryButton}"
+                                               Padding="8,4"
+                                               Margin="0,0,5,0"
+                                               Click="EditCustomer_Click"
+                                               Tag="{Binding}"/>
+                                        <Button Content="Delete"
+                                               Style="{StaticResource SecondaryButton}"
+                                               Padding="8,4"
+                                               Click="DeleteCustomer_Click"
+                                               Tag="{Binding}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <!-- Empty State -->
+                <StackPanel x:Name="EmptyState"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Visibility="Collapsed">
+                    <TextBlock Text="No customers yet"
+                              FontSize="18"
+                              FontWeight="SemiBold"
+                              Foreground="{StaticResource TextSecondaryBrush}"
+                              HorizontalAlignment="Center"/>
+                    <TextBlock Text="Click 'New Customer' to add your first customer"
+                              FontSize="14"
+                              Foreground="{StaticResource TextSecondaryBrush}"
+                              HorizontalAlignment="Center"
+                              Margin="0,8,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </Page>

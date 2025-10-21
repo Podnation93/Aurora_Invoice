@@ -6,8 +6,149 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       d:DesignHeight="800" d:DesignWidth="1000"
       Title="Settings">
+
     <Grid Margin="40,30">
-        <TextBlock Text="Settings Page - Coming Soon"
-                  Style="{StaticResource HeaderText}"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,30">
+            <TextBlock Text="Settings"
+                      Style="{StaticResource HeaderText}"/>
+            <TextBlock Text="Configure your business information and preferences"
+                      Style="{StaticResource SecondaryText}"/>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel MaxWidth="800" HorizontalAlignment="Left">
+                <Border Style="{StaticResource Card}" Margin="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock Text="Business Information"
+                                  Style="{StaticResource SubheaderText}"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Business Name *"
+                                          FontWeight="SemiBold"
+                                          Margin="0,0,0,8"/>
+                                <TextBox x:Name="BusinessNameTextBox"
+                                        Style="{StaticResource ModernTextBox}"
+                                        Margin="0,0,0,16"/>
+
+                                <TextBlock Text="Email"
+                                          FontWeight="SemiBold"
+                                          Margin="0,0,0,8"/>
+                                <TextBox x:Name="EmailTextBox"
+                                        Style="{StaticResource ModernTextBox}"
+                                        Margin="0,0,0,16"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="ABN"
+                                          FontWeight="SemiBold"
+                                          Margin="0,0,0,8"/>
+                                <TextBox x:Name="ABNTextBox"
+                                        Style="{StaticResource ModernTextBox}"
+                                        Margin="0,0,0,16"/>
+
+                                <TextBlock Text="Phone"
+                                          FontWeight="SemiBold"
+                                          Margin="0,0,0,8"/>
+                                <TextBox x:Name="PhoneTextBox"
+                                        Style="{StaticResource ModernTextBox}"
+                                        Margin="0,0,0,16"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Text="Business Address"
+                                  FontWeight="SemiBold"
+                                  Margin="0,0,0,8"/>
+                        <TextBox x:Name="AddressTextBox"
+                                Style="{StaticResource ModernTextBox}"
+                                Height="80"
+                                AcceptsReturn="True"
+                                TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}" Margin="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock Text="Invoice Settings"
+                                  Style="{StaticResource SubheaderText}"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Invoice Prefix"
+                                          FontWeight="SemiBold"
+                                          Margin="0,0,0,8"/>
+                                <TextBox x:Name="InvoicePrefixTextBox"
+                                        Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Next Invoice #"
+                                          FontWeight="SemiBold"
+                                          Margin="0,0,0,8"/>
+                                <TextBox x:Name="NextInvoiceNumberTextBox"
+                                        Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Text="Payment Terms (Days)"
+                                          FontWeight="SemiBold"
+                                          Margin="0,0,0,8"/>
+                                <TextBox x:Name="PaymentTermsTextBox"
+                                        Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Tax Settings"
+                                  Style="{StaticResource SubheaderText}"/>
+
+                        <TextBlock Text="Default GST Rate (%)"
+                                  FontWeight="SemiBold"
+                                  Margin="0,0,0,8"/>
+                        <TextBox x:Name="DefaultGSTRateTextBox"
+                                Style="{StaticResource ModernTextBox}"
+                                Width="200"
+                                HorizontalAlignment="Left"/>
+                        <TextBlock Text="Default is 10% for most goods and services in Australia"
+                                  FontSize="12"
+                                  Foreground="{StaticResource TextSecondaryBrush}"
+                                  Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="2"
+                   Orientation="Horizontal"
+                   HorizontalAlignment="Right"
+                   Margin="0,20,0,0">
+            <Button Content="Save Changes"
+                   Style="{StaticResource ModernButton}"
+                   Width="150"
+                   Click="SaveSettings_Click"/>
+        </StackPanel>
     </Grid>
 </Page>

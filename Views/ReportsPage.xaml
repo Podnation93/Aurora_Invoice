@@ -6,8 +6,95 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       d:DesignHeight="800" d:DesignWidth="1000"
       Title="Reports">
+
     <Grid Margin="40,30">
-        <TextBlock Text="Reports Page - Coming Soon"
-                  Style="{StaticResource HeaderText}"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,30">
+            <TextBlock Text="Reports"
+                      Style="{StaticResource HeaderText}"/>
+            <TextBlock Text="Generate financial reports for your business"
+                      Style="{StaticResource SecondaryText}"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- GST Summary Report -->
+            <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="GST Summary Report"
+                              Style="{StaticResource SubheaderText}"/>
+                    <TextBlock Text="View GST collected and paid for BAS reporting"
+                              Style="{StaticResource SecondaryText}"
+                              Margin="0,0,0,16"/>
+
+                    <Button Content="Generate GST Report"
+                           Style="{StaticResource ModernButton}"
+                           HorizontalAlignment="Left"
+                           Click="GenerateGSTReport_Click"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Yearly Financial Report -->
+            <Border Grid.Row="0" Grid.Column="2" Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Yearly Financial Report"
+                              Style="{StaticResource SubheaderText}"/>
+                    <TextBlock Text="Complete financial summary for the year"
+                              Style="{StaticResource SecondaryText}"
+                              Margin="0,0,0,16"/>
+
+                    <Button Content="Generate Yearly Report"
+                           Style="{StaticResource ModernButton}"
+                           HorizontalAlignment="Left"
+                           Click="GenerateYearlyReport_Click"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Invoice Activity Report -->
+            <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Invoice Activity Report"
+                              Style="{StaticResource SubheaderText}"/>
+                    <TextBlock Text="Overview of all invoice activity"
+                              Style="{StaticResource SecondaryText}"
+                              Margin="0,0,0,16"/>
+
+                    <Button Content="Generate Invoice Report"
+                           Style="{StaticResource ModernButton}"
+                           HorizontalAlignment="Left"
+                           Click="GenerateInvoiceReport_Click"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Expense Report -->
+            <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Expense Report"
+                              Style="{StaticResource SubheaderText}"/>
+                    <TextBlock Text="Detailed breakdown of expenses by category"
+                              Style="{StaticResource SecondaryText}"
+                              Margin="0,0,0,16"/>
+
+                    <Button Content="Generate Expense Report"
+                           Style="{StaticResource ModernButton}"
+                           HorizontalAlignment="Left"
+                           Click="GenerateExpenseReport_Click"/>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </Page>

@@ -6,8 +6,165 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       d:DesignHeight="800" d:DesignWidth="1000"
       Title="Expenses">
+
     <Grid Margin="40,30">
-        <TextBlock Text="Expenses Page - Coming Soon"
-                  Style="{StaticResource HeaderText}"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Expenses"
+                      Style="{StaticResource HeaderText}"/>
+            <TextBlock Text="Track and manage business expenses with GST"
+                      Style="{StaticResource SecondaryText}"/>
+        </StackPanel>
+
+        <!-- Summary Cards -->
+        <Grid Grid.Row="1" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Style="{StaticResource Card}" Padding="16">
+                <StackPanel>
+                    <TextBlock Text="Total Expenses (Month)"
+                              Style="{StaticResource SecondaryText}"
+                              FontSize="12"/>
+                    <TextBlock x:Name="TotalExpensesText"
+                              Text="$0.00"
+                              FontSize="24"
+                              FontWeight="Bold"
+                              Foreground="{StaticResource DangerBrush}"
+                              Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="2" Style="{StaticResource Card}" Padding="16">
+                <StackPanel>
+                    <TextBlock Text="GST Input Credits"
+                              Style="{StaticResource SecondaryText}"
+                              FontSize="12"/>
+                    <TextBlock x:Name="TotalGSTText"
+                              Text="$0.00"
+                              FontSize="24"
+                              FontWeight="Bold"
+                              Foreground="{StaticResource SuccessBrush}"
+                              Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="4" Style="{StaticResource Card}" Padding="16">
+                <StackPanel>
+                    <TextBlock Text="Expense Count"
+                              Style="{StaticResource SecondaryText}"
+                              FontSize="12"/>
+                    <TextBlock x:Name="ExpenseCountText"
+                              Text="0"
+                              FontSize="24"
+                              FontWeight="Bold"
+                              Foreground="{StaticResource PrimaryBrush}"
+                              Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Action Bar -->
+        <Grid Grid.Row="2" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <ComboBox x:Name="CategoryFilterComboBox"
+                     Grid.Column="0"
+                     Style="{StaticResource ModernComboBox}"
+                     Width="200"
+                     SelectionChanged="CategoryFilterComboBox_SelectionChanged">
+                <ComboBoxItem Content="All Categories" IsSelected="True"/>
+            </ComboBox>
+
+            <TextBox x:Name="SearchBox"
+                    Grid.Column="2"
+                    Style="{StaticResource ModernTextBox}"
+                    Width="300"
+                    HorizontalAlignment="Left"
+                    TextChanged="SearchBox_TextChanged">
+                <TextBox.Tag>
+                    <TextBlock Text="Search expenses..."
+                              Foreground="{StaticResource TextSecondaryBrush}"
+                              IsHitTestVisible="False"
+                              Margin="12,10"/>
+                </TextBox.Tag>
+            </TextBox>
+
+            <Button Grid.Column="4"
+                   Content="+ New Expense"
+                   Style="{StaticResource ModernButton}"
+                   Click="NewExpense_Click"/>
+        </Grid>
+
+        <!-- Expense List -->
+        <Border Grid.Row="3" Style="{StaticResource Card}">
+            <Grid>
+                <DataGrid x:Name="ExpensesGrid"
+                         Style="{StaticResource ModernDataGrid}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=dd/MM/yyyy}" Width="Auto"/>
+                        <DataGridTextColumn Header="Vendor" Binding="{Binding Vendor}" Width="*"/>
+                        <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="2*"/>
+                        <DataGridTextColumn Header="Category" Binding="{Binding Category.Name}" Width="Auto"/>
+                        <DataGridTextColumn Header="Amount" Binding="{Binding Amount, StringFormat=C}" Width="Auto"/>
+                        <DataGridTextColumn Header="GST" Binding="{Binding GSTAmount, StringFormat=C}" Width="Auto"/>
+                        <DataGridTemplateColumn Header="Actions" Width="Auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="Edit"
+                                               Style="{StaticResource SecondaryButton}"
+                                               Padding="8,4"
+                                               Margin="0,0,5,0"
+                                               Click="EditExpense_Click"
+                                               Tag="{Binding}"/>
+                                        <Button Content="Delete"
+                                               Style="{StaticResource SecondaryButton}"
+                                               Padding="8,4"
+                                               Click="DeleteExpense_Click"
+                                               Tag="{Binding}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <!-- Empty State -->
+                <StackPanel x:Name="EmptyState"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Visibility="Collapsed">
+                    <TextBlock Text="No expenses recorded yet"
+                              FontSize="18"
+                              FontWeight="SemiBold"
+                              Foreground="{StaticResource TextSecondaryBrush}"
+                              HorizontalAlignment="Center"/>
+                    <TextBlock Text="Click 'New Expense' to record your first expense"
+                              FontSize="14"
+                              Foreground="{StaticResource TextSecondaryBrush}"
+                              HorizontalAlignment="Center"
+                              Margin="0,8,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </Page>

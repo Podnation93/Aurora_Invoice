@@ -6,8 +6,109 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       d:DesignHeight="800" d:DesignWidth="1000"
       Title="Backup &amp; Restore">
+
     <Grid Margin="40,30">
-        <TextBlock Text="Backup &amp; Restore Page - Coming Soon"
-                  Style="{StaticResource HeaderText}"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,30">
+            <TextBlock Text="Backup &amp; Restore"
+                      Style="{StaticResource HeaderText}"/>
+            <TextBlock Text="Protect your data with local backups"
+                      Style="{StaticResource SecondaryText}"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Create Backup -->
+            <Border Grid.Column="0" Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Create Backup"
+                              Style="{StaticResource SubheaderText}"/>
+
+                    <TextBlock Text="Database Location:"
+                              FontWeight="SemiBold"
+                              Margin="0,0,0,8"/>
+                    <TextBlock x:Name="DatabaseLocationText"
+                              Text="Loading..."
+                              Style="{StaticResource SecondaryText}"
+                              TextWrapping="Wrap"
+                              Margin="0,0,0,16"/>
+
+                    <TextBlock Text="Backup Folder:"
+                              FontWeight="SemiBold"
+                              Margin="0,0,0,8"/>
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox x:Name="BackupFolderTextBox"
+                                Grid.Column="0"
+                                Style="{StaticResource ModernTextBox}"
+                                IsReadOnly="True"/>
+
+                        <Button Grid.Column="2"
+                               Content="Browse..."
+                               Style="{StaticResource SecondaryButton}"
+                               Click="BrowseBackupFolder_Click"/>
+                    </Grid>
+
+                    <Button Content="Create Backup Now"
+                           Style="{StaticResource ModernButton}"
+                           HorizontalAlignment="Left"
+                           Click="CreateBackup_Click"/>
+
+                    <TextBlock x:Name="LastBackupText"
+                              Text="Last backup: Never"
+                              Style="{StaticResource SecondaryText}"
+                              Margin="0,16,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Restore Backup -->
+            <Border Grid.Column="2" Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Restore from Backup"
+                              Style="{StaticResource SubheaderText}"/>
+
+                    <TextBlock Text="Available Backups:"
+                              FontWeight="SemiBold"
+                              Margin="0,0,0,8"/>
+
+                    <ListBox x:Name="BackupsListBox"
+                            Height="300"
+                            Margin="0,0,0,16"
+                            SelectionChanged="BackupsListBox_SelectionChanged"/>
+
+                    <Button x:Name="RestoreButton"
+                           Content="Restore Selected Backup"
+                           Style="{StaticResource ModernButton}"
+                           HorizontalAlignment="Left"
+                           IsEnabled="False"
+                           Click="RestoreBackup_Click"/>
+
+                    <TextBlock Text="Warning: Restoring will replace current data"
+                              Foreground="{StaticResource DangerBrush}"
+                              FontSize="12"
+                              Margin="0,8,0,0"/>
+
+                    <Button Content="Refresh List"
+                           Style="{StaticResource SecondaryButton}"
+                           HorizontalAlignment="Left"
+                           Margin="0,16,0,0"
+                           Click="RefreshBackupsList_Click"/>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </Page>
