@@ -1,0 +1,101 @@
+<Page x:Class="AuroraInvoice.Views.ErrorLogsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      mc:Ignorable="d"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      d:DesignHeight="800" d:DesignWidth="1000"
+      Title="Error Logs">
+
+    <Grid Margin="40,30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Error Logs"
+                      Style="{StaticResource HeaderText}"/>
+            <TextBlock Text="Monitor application errors and issues"
+                      Style="{StaticResource SecondaryText}"/>
+        </StackPanel>
+
+        <!-- Action Bar -->
+        <Grid Grid.Row="1" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <ComboBox x:Name="SeverityFilterComboBox"
+                     Grid.Column="0"
+                     Style="{StaticResource ModernComboBox}"
+                     Width="150"
+                     SelectionChanged="SeverityFilterComboBox_SelectionChanged">
+                <ComboBoxItem Content="All Severity" IsSelected="True"/>
+                <ComboBoxItem Content="Critical"/>
+                <ComboBoxItem Content="Error"/>
+                <ComboBoxItem Content="Warning"/>
+                <ComboBoxItem Content="Info"/>
+            </ComboBox>
+
+            <Button Grid.Column="2"
+                   Content="Refresh"
+                   Style="{StaticResource SecondaryButton}"
+                   Click="Refresh_Click"/>
+
+            <Button Grid.Column="4"
+                   Content="Clear Old Logs"
+                   Style="{StaticResource DangerButton}"
+                   Click="ClearOldLogs_Click"/>
+        </Grid>
+
+        <!-- Logs Grid -->
+        <Border Grid.Row="2" Style="{StaticResource Card}">
+            <Grid>
+                <DataGrid x:Name="LogsGrid"
+                         Style="{StaticResource ModernDataGrid}"
+                         MouseDoubleClick="LogsGrid_MouseDoubleClick">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Timestamp" Binding="{Binding Timestamp, StringFormat=dd/MM/yyyy HH:mm:ss}" Width="150"/>
+                        <DataGridTextColumn Header="Severity" Binding="{Binding Severity}" Width="80"/>
+                        <DataGridTextColumn Header="Source" Binding="{Binding Source}" Width="200"/>
+                        <DataGridTextColumn Header="Message" Binding="{Binding Message}" Width="*"/>
+                        <DataGridTextColumn Header="User Action" Binding="{Binding UserAction}" Width="150"/>
+                        <DataGridTemplateColumn Header="Resolved" Width="80">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding IsResolved, Mode=OneWay}"
+                                            IsEnabled="False"
+                                            HorizontalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <!-- Empty State -->
+                <StackPanel x:Name="EmptyState"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Visibility="Collapsed">
+                    <TextBlock Text="No error logs"
+                              FontSize="18"
+                              FontWeight="SemiBold"
+                              Foreground="{StaticResource TextSecondaryBrush}"
+                              HorizontalAlignment="Center"/>
+                    <TextBlock Text="The application is running smoothly!"
+                              FontSize="14"
+                              Foreground="{StaticResource TextSecondaryBrush}"
+                              HorizontalAlignment="Center"
+                              Margin="0,8,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>
