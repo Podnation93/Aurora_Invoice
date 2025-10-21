@@ -5,8 +5,110 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AuroraInvoice"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Aurora Invoice"
+        Height="800"
+        Width="1400"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized">
 
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar Navigation -->
+        <Border Grid.Column="0"
+                Background="#1e293b"
+                Padding="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Logo/Title -->
+                <StackPanel Grid.Row="0"
+                           Margin="20,30,20,40">
+                    <TextBlock Text="Aurora Invoice"
+                              FontSize="24"
+                              FontWeight="Bold"
+                              Foreground="White"
+                              HorizontalAlignment="Left"/>
+                    <TextBlock Text="Financial Management"
+                              FontSize="12"
+                              Foreground="#94a3b8"
+                              Margin="0,4,0,0"
+                              HorizontalAlignment="Left"/>
+                </StackPanel>
+
+                <!-- Navigation Menu -->
+                <StackPanel Grid.Row="1"
+                           Margin="12,0">
+                    <RadioButton x:Name="DashboardNav"
+                                Content="Dashboard"
+                                Style="{StaticResource NavButton}"
+                                IsChecked="True"
+                                Checked="NavigationButton_Checked"/>
+
+                    <RadioButton x:Name="InvoicesNav"
+                                Content="Invoices"
+                                Style="{StaticResource NavButton}"
+                                Checked="NavigationButton_Checked"/>
+
+                    <RadioButton x:Name="CustomersNav"
+                                Content="Customers"
+                                Style="{StaticResource NavButton}"
+                                Checked="NavigationButton_Checked"/>
+
+                    <RadioButton x:Name="ExpensesNav"
+                                Content="Expenses"
+                                Style="{StaticResource NavButton}"
+                                Checked="NavigationButton_Checked"/>
+
+                    <RadioButton x:Name="ReportsNav"
+                                Content="Reports"
+                                Style="{StaticResource NavButton}"
+                                Checked="NavigationButton_Checked"/>
+
+                    <Separator Margin="0,12"
+                              Background="#334155"/>
+
+                    <RadioButton x:Name="SettingsNav"
+                                Content="Settings"
+                                Style="{StaticResource NavButton}"
+                                Checked="NavigationButton_Checked"/>
+
+                    <RadioButton x:Name="BackupNav"
+                                Content="Backup &amp; Restore"
+                                Style="{StaticResource NavButton}"
+                                Checked="NavigationButton_Checked"/>
+                </StackPanel>
+
+                <!-- Footer Info -->
+                <StackPanel Grid.Row="2"
+                           Margin="20,20"
+                           Orientation="Vertical">
+                    <TextBlock Text="Open Source"
+                              FontSize="11"
+                              Foreground="#64748b"
+                              HorizontalAlignment="Center"/>
+                    <TextBlock Text="MIT License"
+                              FontSize="11"
+                              Foreground="#64748b"
+                              HorizontalAlignment="Center"
+                              Margin="0,2,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main Content Area -->
+        <Border Grid.Column="1"
+                Background="{StaticResource BackgroundBrush}">
+            <Frame x:Name="MainFrame"
+                   NavigationUIVisibility="Hidden"
+                   Background="Transparent"/>
+        </Border>
     </Grid>
 </Window>

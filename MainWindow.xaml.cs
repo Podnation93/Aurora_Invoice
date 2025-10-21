@@ -1,13 +1,6 @@
-﻿using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using AuroraInvoice.Views;
 
 namespace AuroraInvoice;
 
@@ -19,5 +12,31 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+
+        // Navigate to Dashboard by default
+        MainFrame.Navigate(new DashboardPage());
+    }
+
+    private void NavigationButton_Checked(object sender, RoutedEventArgs e)
+    {
+        if (sender is not RadioButton radioButton || MainFrame == null)
+            return;
+
+        Page? pageToNavigate = radioButton.Name switch
+        {
+            "DashboardNav" => new DashboardPage(),
+            "InvoicesNav" => new InvoicesPage(),
+            "CustomersNav" => new CustomersPage(),
+            "ExpensesNav" => new ExpensesPage(),
+            "ReportsNav" => new ReportsPage(),
+            "SettingsNav" => new SettingsPage(),
+            "BackupNav" => new BackupPage(),
+            _ => null
+        };
+
+        if (pageToNavigate != null)
+        {
+            MainFrame.Navigate(pageToNavigate);
+        }
     }
 }

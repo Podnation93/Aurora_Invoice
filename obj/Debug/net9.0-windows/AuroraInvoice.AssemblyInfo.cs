@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AuroraInvoice")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7a0c625463a81175e906d2d08414c616ca556e53")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+77e59e249baf57f7ace572448e6ae9028251bc92")]
 [assembly: System.Reflection.AssemblyProductAttribute("AuroraInvoice")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AuroraInvoice")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
