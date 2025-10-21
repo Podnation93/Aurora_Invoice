@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuroraInvoice.Migrations
 {
     [DbContext(typeof(AuroraDbContext))]
-    [Migration("20251021105809_InitialCreate")]
+    [Migration("20251021111143_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -103,7 +103,7 @@ namespace AuroraInvoice.Migrations
                             AutoBackupEnabled = false,
                             AutoBackupIntervalDays = 7,
                             BusinessName = "My Business",
-                            CreatedDate = new DateTime(2025, 10, 21, 21, 58, 7, 877, DateTimeKind.Local).AddTicks(2043),
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DefaultGSTRate = 0.10m,
                             DefaultPaymentTermsDays = 30,
                             InvoicePrefix = "INV-",
@@ -232,7 +232,7 @@ namespace AuroraInvoice.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2025, 10, 21, 21, 58, 7, 875, DateTimeKind.Local).AddTicks(2295),
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Stationery, printer supplies, etc.",
                             IsActive = true,
                             Name = "Office Supplies"
@@ -240,7 +240,7 @@ namespace AuroraInvoice.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2025, 10, 21, 21, 58, 7, 876, DateTimeKind.Local).AddTicks(7613),
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Office or workspace rental",
                             IsActive = true,
                             Name = "Rent"
@@ -248,7 +248,7 @@ namespace AuroraInvoice.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedDate = new DateTime(2025, 10, 21, 21, 58, 7, 876, DateTimeKind.Local).AddTicks(7633),
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Electricity, water, internet, phone",
                             IsActive = true,
                             Name = "Utilities"
@@ -256,7 +256,7 @@ namespace AuroraInvoice.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedDate = new DateTime(2025, 10, 21, 21, 58, 7, 876, DateTimeKind.Local).AddTicks(7635),
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Transportation, accommodation, meals",
                             IsActive = true,
                             Name = "Travel"
@@ -264,7 +264,7 @@ namespace AuroraInvoice.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedDate = new DateTime(2025, 10, 21, 21, 58, 7, 876, DateTimeKind.Local).AddTicks(7637),
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Cloud services, software licenses",
                             IsActive = true,
                             Name = "Software Subscriptions"
@@ -272,7 +272,7 @@ namespace AuroraInvoice.Migrations
                         new
                         {
                             Id = 6,
-                            CreatedDate = new DateTime(2025, 10, 21, 21, 58, 7, 876, DateTimeKind.Local).AddTicks(7639),
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Legal, accounting, consulting",
                             IsActive = true,
                             Name = "Professional Services"
@@ -280,7 +280,7 @@ namespace AuroraInvoice.Migrations
                         new
                         {
                             Id = 7,
-                            CreatedDate = new DateTime(2025, 10, 21, 21, 58, 7, 876, DateTimeKind.Local).AddTicks(7640),
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Promotional materials, online ads",
                             IsActive = true,
                             Name = "Marketing & Advertising"
@@ -288,7 +288,7 @@ namespace AuroraInvoice.Migrations
                         new
                         {
                             Id = 8,
-                            CreatedDate = new DateTime(2025, 10, 21, 21, 58, 7, 876, DateTimeKind.Local).AddTicks(7641),
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Computers, furniture, machinery",
                             IsActive = true,
                             Name = "Equipment"
@@ -296,7 +296,7 @@ namespace AuroraInvoice.Migrations
                         new
                         {
                             Id = 9,
-                            CreatedDate = new DateTime(2025, 10, 21, 21, 58, 7, 876, DateTimeKind.Local).AddTicks(7643),
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Business insurance premiums",
                             IsActive = true,
                             Name = "Insurance"
@@ -304,7 +304,7 @@ namespace AuroraInvoice.Migrations
                         new
                         {
                             Id = 10,
-                            CreatedDate = new DateTime(2025, 10, 21, 21, 58, 7, 876, DateTimeKind.Local).AddTicks(7644),
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Miscellaneous expenses",
                             IsActive = true,
                             Name = "Other"

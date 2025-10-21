@@ -164,23 +164,23 @@ namespace AuroraInvoice.Migrations
             migrationBuilder.InsertData(
                 table: "AppSettings",
                 columns: new[] { "Id", "ABN", "AccentColor", "AutoBackupEnabled", "AutoBackupIntervalDays", "BackupFolderPath", "BusinessAddress", "BusinessName", "CreatedDate", "DefaultGSTRate", "DefaultPaymentTermsDays", "Email", "InvoicePrefix", "LastBackupDate", "LogoPath", "ModifiedDate", "NextInvoiceNumber", "Phone", "ThemeColor" },
-                values: new object[] { 1, null, "#7c3aed", false, 7, null, null, "My Business", new DateTime(2025, 10, 21, 21, 58, 7, 877, DateTimeKind.Local).AddTicks(2043), 0.10m, 30, null, "INV-", null, null, null, 1, null, "#2563eb" });
+                values: new object[] { 1, null, "#7c3aed", false, 7, null, null, "My Business", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 0.10m, 30, null, "INV-", null, null, null, 1, null, "#2563eb" });
 
             migrationBuilder.InsertData(
                 table: "ExpenseCategories",
                 columns: new[] { "Id", "CreatedDate", "Description", "IsActive", "Name" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 10, 21, 21, 58, 7, 875, DateTimeKind.Local).AddTicks(2295), "Stationery, printer supplies, etc.", true, "Office Supplies" },
-                    { 2, new DateTime(2025, 10, 21, 21, 58, 7, 876, DateTimeKind.Local).AddTicks(7613), "Office or workspace rental", true, "Rent" },
-                    { 3, new DateTime(2025, 10, 21, 21, 58, 7, 876, DateTimeKind.Local).AddTicks(7633), "Electricity, water, internet, phone", true, "Utilities" },
-                    { 4, new DateTime(2025, 10, 21, 21, 58, 7, 876, DateTimeKind.Local).AddTicks(7635), "Transportation, accommodation, meals", true, "Travel" },
-                    { 5, new DateTime(2025, 10, 21, 21, 58, 7, 876, DateTimeKind.Local).AddTicks(7637), "Cloud services, software licenses", true, "Software Subscriptions" },
-                    { 6, new DateTime(2025, 10, 21, 21, 58, 7, 876, DateTimeKind.Local).AddTicks(7639), "Legal, accounting, consulting", true, "Professional Services" },
-                    { 7, new DateTime(2025, 10, 21, 21, 58, 7, 876, DateTimeKind.Local).AddTicks(7640), "Promotional materials, online ads", true, "Marketing & Advertising" },
-                    { 8, new DateTime(2025, 10, 21, 21, 58, 7, 876, DateTimeKind.Local).AddTicks(7641), "Computers, furniture, machinery", true, "Equipment" },
-                    { 9, new DateTime(2025, 10, 21, 21, 58, 7, 876, DateTimeKind.Local).AddTicks(7643), "Business insurance premiums", true, "Insurance" },
-                    { 10, new DateTime(2025, 10, 21, 21, 58, 7, 876, DateTimeKind.Local).AddTicks(7644), "Miscellaneous expenses", true, "Other" }
+                    { 1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Stationery, printer supplies, etc.", true, "Office Supplies" },
+                    { 2, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Office or workspace rental", true, "Rent" },
+                    { 3, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Electricity, water, internet, phone", true, "Utilities" },
+                    { 4, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Transportation, accommodation, meals", true, "Travel" },
+                    { 5, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Cloud services, software licenses", true, "Software Subscriptions" },
+                    { 6, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Legal, accounting, consulting", true, "Professional Services" },
+                    { 7, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Promotional materials, online ads", true, "Marketing & Advertising" },
+                    { 8, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Computers, furniture, machinery", true, "Equipment" },
+                    { 9, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Business insurance premiums", true, "Insurance" },
+                    { 10, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Miscellaneous expenses", true, "Other" }
                 });
 
             migrationBuilder.CreateIndex(

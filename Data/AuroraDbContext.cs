@@ -60,17 +60,19 @@ public class AuroraDbContext : DbContext
             .OnDelete(DeleteBehavior.Restrict);
 
         // Seed default expense categories
+        var seedDate = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
         modelBuilder.Entity<ExpenseCategory>().HasData(
-            new ExpenseCategory { Id = 1, Name = "Office Supplies", Description = "Stationery, printer supplies, etc." },
-            new ExpenseCategory { Id = 2, Name = "Rent", Description = "Office or workspace rental" },
-            new ExpenseCategory { Id = 3, Name = "Utilities", Description = "Electricity, water, internet, phone" },
-            new ExpenseCategory { Id = 4, Name = "Travel", Description = "Transportation, accommodation, meals" },
-            new ExpenseCategory { Id = 5, Name = "Software Subscriptions", Description = "Cloud services, software licenses" },
-            new ExpenseCategory { Id = 6, Name = "Professional Services", Description = "Legal, accounting, consulting" },
-            new ExpenseCategory { Id = 7, Name = "Marketing & Advertising", Description = "Promotional materials, online ads" },
-            new ExpenseCategory { Id = 8, Name = "Equipment", Description = "Computers, furniture, machinery" },
-            new ExpenseCategory { Id = 9, Name = "Insurance", Description = "Business insurance premiums" },
-            new ExpenseCategory { Id = 10, Name = "Other", Description = "Miscellaneous expenses" }
+            new ExpenseCategory { Id = 1, Name = "Office Supplies", Description = "Stationery, printer supplies, etc.", CreatedDate = seedDate, IsActive = true },
+            new ExpenseCategory { Id = 2, Name = "Rent", Description = "Office or workspace rental", CreatedDate = seedDate, IsActive = true },
+            new ExpenseCategory { Id = 3, Name = "Utilities", Description = "Electricity, water, internet, phone", CreatedDate = seedDate, IsActive = true },
+            new ExpenseCategory { Id = 4, Name = "Travel", Description = "Transportation, accommodation, meals", CreatedDate = seedDate, IsActive = true },
+            new ExpenseCategory { Id = 5, Name = "Software Subscriptions", Description = "Cloud services, software licenses", CreatedDate = seedDate, IsActive = true },
+            new ExpenseCategory { Id = 6, Name = "Professional Services", Description = "Legal, accounting, consulting", CreatedDate = seedDate, IsActive = true },
+            new ExpenseCategory { Id = 7, Name = "Marketing & Advertising", Description = "Promotional materials, online ads", CreatedDate = seedDate, IsActive = true },
+            new ExpenseCategory { Id = 8, Name = "Equipment", Description = "Computers, furniture, machinery", CreatedDate = seedDate, IsActive = true },
+            new ExpenseCategory { Id = 9, Name = "Insurance", Description = "Business insurance premiums", CreatedDate = seedDate, IsActive = true },
+            new ExpenseCategory { Id = 10, Name = "Other", Description = "Miscellaneous expenses", CreatedDate = seedDate, IsActive = true }
         );
 
         // Seed default app settings
@@ -85,7 +87,7 @@ public class AuroraDbContext : DbContext
                 DefaultGSTRate = 0.10m,
                 ThemeColor = "#2563eb",
                 AccentColor = "#7c3aed",
-                CreatedDate = DateTime.Now
+                CreatedDate = seedDate
             }
         );
     }
