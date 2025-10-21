@@ -1,0 +1,5 @@
+e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\AuroraInvoice.csproj.AssemblyReference.cache
+e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\MainWindow.g.cs
+e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\App.g.cs
+e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\AuroraInvoice_MarkupCompile.cache
+e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\AuroraInvoice_MarkupCompile.lref
