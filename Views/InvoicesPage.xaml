@@ -147,6 +147,18 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
+                                        <Button Content="Preview PDF"
+                                               Style="{StaticResource ModernButton}"
+                                               Padding="8,4"
+                                               Margin="0,0,5,0"
+                                               Click="PreviewInvoice_Click"
+                                               Tag="{Binding}"/>
+                                        <Button Content="Download PDF"
+                                               Style="{StaticResource SecondaryButton}"
+                                               Padding="8,4"
+                                               Margin="0,0,5,0"
+                                               Click="DownloadInvoice_Click"
+                                               Tag="{Binding}"/>
                                         <Button Content="Edit"
                                                Style="{StaticResource SecondaryButton}"
                                                Padding="8,4"

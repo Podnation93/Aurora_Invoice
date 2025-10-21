@@ -1,3 +1,4 @@
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -171,6 +172,68 @@ public partial class InvoicesPage : Page
             if (dialog.ShowDialog() == true)
             {
                 await LoadInvoicesAsync();
+            }
+        }
+    }
+
+    private async void PreviewInvoice_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button && button.Tag is Invoice invoice)
+        {
+            try
+            {
+                var pdfService = new Services.InvoicePdfService();
+                var pdfBytes = await pdfService.GenerateInvoicePdfBytesAsync(invoice);
+
+                // Save to temp file and open
+                var tempPath = Path.Combine(Path.GetTempPath(), $"Invoice_{invoice.InvoiceNumber}.pdf");
+                await File.WriteAllBytesAsync(tempPath, pdfBytes);
+
+                // Open PDF with default viewer
+                var process = new System.Diagnostics.Process();
+                process.StartInfo = new System.Diagnostics.ProcessStartInfo(tempPath)
+                {
+                    UseShellExecute = true
+                };
+                process.Start();
+            }
+            catch (Exception ex)
+            {
+                await Services.LoggingService.LogErrorAsync(ex, "InvoicesPage.PreviewInvoice_Click", "User clicked Preview PDF");
+                MessageBox.Show($"Error generating invoice preview: {ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+    }
+
+    private async void DownloadInvoice_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button && button.Tag is Invoice invoice)
+        {
+            try
+            {
+                // Ask user where to save
+                var dialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    FileName = $"Invoice_{invoice.InvoiceNumber}",
+                    DefaultExt = ".pdf",
+                    Filter = "PDF files (*.pdf)|*.pdf"
+                };
+
+                if (dialog.ShowDialog() == true)
+                {
+                    var pdfService = new Services.InvoicePdfService();
+                    await pdfService.GenerateInvoicePdfAsync(invoice, dialog.FileName);
+
+                    MessageBox.Show($"Invoice saved successfully!\n\nLocation: {dialog.FileName}", "Success",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                await Services.LoggingService.LogErrorAsync(ex, "InvoicesPage.DownloadInvoice_Click", "User clicked Download PDF");
+                MessageBox.Show($"Error saving invoice: {ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

@@ -21,6 +21,11 @@ public class InvoiceItem
     [MaxLength(500)]
     public string Description { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Service date for this line item (optional)
+    /// </summary>
+    public DateTime? ServiceDate { get; set; }
+
     [Column(TypeName = "decimal(18,2)")]
     public decimal Quantity { get; set; }
 

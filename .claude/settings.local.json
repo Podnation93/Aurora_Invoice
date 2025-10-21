@@ -9,7 +9,8 @@
       "Bash(dotnet ef migrations:*)",
       "Bash(dotnet build:*)",
       "Bash(dotnet run:*)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "Bash(tasklist:*)"
     ],
     "deny": [],
     "ask": []
