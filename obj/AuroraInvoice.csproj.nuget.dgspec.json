@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "e:\\Programming\\Aurora_Invoice\\AuroraInvoice.csproj": {}
+    "E:\\Programming\\Aurora_Invoice\\AuroraInvoice.csproj": {}
   },
   "projects": {
-    "e:\\Programming\\Aurora_Invoice\\AuroraInvoice.csproj": {
+    "E:\\Programming\\Aurora_Invoice\\AuroraInvoice.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "e:\\Programming\\Aurora_Invoice\\AuroraInvoice.csproj",
+        "projectUniqueName": "E:\\Programming\\Aurora_Invoice\\AuroraInvoice.csproj",
         "projectName": "AuroraInvoice",
-        "projectPath": "e:\\Programming\\Aurora_Invoice\\AuroraInvoice.csproj",
+        "projectPath": "E:\\Programming\\Aurora_Invoice\\AuroraInvoice.csproj",
         "packagesPath": "C:\\Users\\dylst\\.nuget\\packages\\",
-        "outputPath": "e:\\Programming\\Aurora_Invoice\\obj\\",
+        "outputPath": "E:\\Programming\\Aurora_Invoice\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\dylst\\AppData\\Roaming\\NuGet\\NuGet.Config"

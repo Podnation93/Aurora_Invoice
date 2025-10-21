@@ -202,3 +202,7 @@ e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\Views\DashboardPage.baml
 e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\AuroraInvoice.sourcelink.json
 e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\Views\CustomerDialog.baml
 e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\Views\CustomerDialog.g.cs
+e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\Views\ExpenseDialog.baml
+e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\Views\InvoiceDialog.baml
+e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\Views\ExpenseDialog.g.cs
+e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\Views\InvoiceDialog.g.cs

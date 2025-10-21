@@ -64,14 +64,17 @@ public partial class InvoicesPage : Page
 
     private void FilterInvoices()
     {
-        var searchText = SearchBox.Text.ToLower();
+        if (SearchBox == null || StatusFilterComboBox == null)
+            return;
+
+        var searchText = SearchBox.Text?.ToLower() ?? string.Empty;
         var filtered = _allInvoices.AsEnumerable();
 
         if (!string.IsNullOrWhiteSpace(searchText))
         {
             filtered = filtered.Where(i =>
                 i.InvoiceNumber.ToLower().Contains(searchText) ||
-                i.Customer.Name.ToLower().Contains(searchText)
+                (i.Customer != null && i.Customer.Name.ToLower().Contains(searchText))
             );
         }
 

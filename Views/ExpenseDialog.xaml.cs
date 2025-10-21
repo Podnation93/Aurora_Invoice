@@ -22,6 +22,8 @@ public partial class ExpenseDialog : Window
         CategoryComboBox.ItemsSource = _categories;
         if (_categories.Count > 0)
             CategoryComboBox.SelectedIndex = 0;
+
+        DatePicker.SelectedDate = DateTime.Now;
     }
 
     public ExpenseDialog(Expense expense, List<ExpenseCategory> categories)

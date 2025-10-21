@@ -15,6 +15,7 @@ public class AuroraDbContext : DbContext
     public DbSet<Expense> Expenses => Set<Expense>();
     public DbSet<ExpenseCategory> ExpenseCategories => Set<ExpenseCategory>();
     public DbSet<AppSettings> AppSettings => Set<AppSettings>();
+    public DbSet<ErrorLog> ErrorLogs => Set<ErrorLog>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
