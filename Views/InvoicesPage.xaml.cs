@@ -5,16 +5,22 @@ using System.Windows.Input;
 using Microsoft.EntityFrameworkCore;
 using AuroraInvoice.Data;
 using AuroraInvoice.Models;
+using AuroraInvoice.Services;
+using AuroraInvoice.Services.Interfaces;
 
 namespace AuroraInvoice.Views;
 
 public partial class InvoicesPage : Page
 {
+    private readonly IInvoiceService _invoiceService;
+    private readonly ICustomerService _customerService;
     private List<Invoice> _allInvoices = new();
 
     public InvoicesPage()
     {
         InitializeComponent();
+        _invoiceService = new InvoiceService();
+        _customerService = new CustomerService();
         Loaded += InvoicesPage_Loaded;
     }
 
@@ -27,20 +33,21 @@ public partial class InvoicesPage : Page
     {
         try
         {
-            using var context = new AuroraDbContext();
+            // Update overdue invoices first
+            await _invoiceService.UpdateOverdueInvoicesAsync();
 
-            _allInvoices = await context.Invoices
-                .Include(i => i.Customer)
-                .OrderByDescending(i => i.InvoiceDate)
-                .ToListAsync();
-
+            // Load all invoices
+            _allInvoices = await _invoiceService.GetAllInvoicesAsync();
             InvoicesGrid.ItemsSource = _allInvoices;
 
+            // Get summary statistics
+            var summary = await _invoiceService.GetInvoiceSummaryAsync();
+
             // Update summary cards
-            TotalInvoicedText.Text = _allInvoices.Sum(i => i.TotalAmount).ToString("C");
-            TotalPaidText.Text = _allInvoices.Where(i => i.Status == InvoiceStatus.Paid).Sum(i => i.TotalAmount).ToString("C");
-            TotalOutstandingText.Text = _allInvoices.Where(i => i.Status == InvoiceStatus.Sent).Sum(i => i.TotalAmount).ToString("C");
-            TotalOverdueText.Text = _allInvoices.Where(i => i.Status == InvoiceStatus.Overdue).Sum(i => i.TotalAmount).ToString("C");
+            TotalInvoicedText.Text = summary.TotalInvoiced.ToString("C");
+            TotalPaidText.Text = summary.TotalPaid.ToString("C");
+            TotalOutstandingText.Text = summary.TotalOutstanding.ToString("C");
+            TotalOverdueText.Text = summary.TotalOverdue.ToString("C");
 
             // Show/hide empty state
             EmptyState.Visibility = _allInvoices.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -48,6 +55,7 @@ public partial class InvoicesPage : Page
         }
         catch (Exception ex)
         {
+            await LoggingService.LogErrorAsync(ex, "InvoicesPage.LoadInvoicesAsync");
             MessageBox.Show($"Error loading invoices: {ex.Message}", "Error",
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
@@ -97,8 +105,7 @@ public partial class InvoicesPage : Page
 
     private async void NewInvoice_Click(object sender, RoutedEventArgs e)
     {
-        using var context = new AuroraDbContext();
-        var customers = await context.Customers.ToListAsync();
+        var (customers, _) = await _customerService.GetCustomersAsync();
 
         if (customers.Count == 0)
         {
