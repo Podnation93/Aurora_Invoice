@@ -36,8 +36,7 @@
                     <TextBlock Text="Database Location:"
                               FontWeight="SemiBold"
                               Margin="0,0,0,8"/>
-                    <TextBlock x:Name="DatabaseLocationText"
-                              Text="Loading..."
+                    <TextBlock Text="{Binding DatabaseLocation}"
                               Style="{StaticResource SecondaryText}"
                               TextWrapping="Wrap"
                               Margin="0,0,0,16"/>
@@ -52,24 +51,22 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBox x:Name="BackupFolderTextBox"
-                                Grid.Column="0"
+                        <TextBox Grid.Column="0"
+                                Text="{Binding BackupFolderPath}"
                                 Style="{StaticResource ModernTextBox}"
                                 IsReadOnly="True"/>
 
                         <Button Grid.Column="2"
                                Content="Browse..."
-                               Style="{StaticResource SecondaryButton}"
-                               Click="BrowseBackupFolder_Click"/>
+                               Style="{StaticResource SecondaryButton}"/>
                     </Grid>
 
                     <Button Content="Create Backup Now"
                            Style="{StaticResource ModernButton}"
                            HorizontalAlignment="Left"
-                           Click="CreateBackup_Click"/>
+                           Command="{Binding CreateBackupCommand}"/>
 
-                    <TextBlock x:Name="LastBackupText"
-                              Text="Last backup: Never"
+                    <TextBlock Text="{Binding LastBackupText}"
                               Style="{StaticResource SecondaryText}"
                               Margin="0,16,0,0"/>
                 </StackPanel>
@@ -85,17 +82,16 @@
                               FontWeight="SemiBold"
                               Margin="0,0,0,8"/>
 
-                    <ListBox x:Name="BackupsListBox"
+                    <ListBox ItemsSource="{Binding Backups}"
+                            SelectedItem="{Binding SelectedBackup}"
+                            DisplayMemberPath="Name"
                             Height="300"
-                            Margin="0,0,0,16"
-                            SelectionChanged="BackupsListBox_SelectionChanged"/>
+                            Margin="0,0,0,16"/>
 
-                    <Button x:Name="RestoreButton"
-                           Content="Restore Selected Backup"
+                    <Button Content="Restore Selected Backup"
                            Style="{StaticResource ModernButton}"
                            HorizontalAlignment="Left"
-                           IsEnabled="False"
-                           Click="RestoreBackup_Click"/>
+                           Command="{Binding RestoreBackupCommand}"/>
 
                     <TextBlock Text="Warning: Restoring will replace current data"
                               Foreground="{StaticResource DangerBrush}"
@@ -106,7 +102,7 @@
                            Style="{StaticResource SecondaryButton}"
                            HorizontalAlignment="Left"
                            Margin="0,16,0,0"
-                           Click="RefreshBackupsList_Click"/>
+                           Command="{Binding RefreshBackupsListCommand}"/>
                 </StackPanel>
             </Border>
         </Grid>

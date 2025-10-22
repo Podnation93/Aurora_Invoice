@@ -39,15 +39,15 @@
                                 <TextBlock Text="Business Name *"
                                           FontWeight="SemiBold"
                                           Margin="0,0,0,8"/>
-                                <TextBox x:Name="BusinessNameTextBox"
-                                        Style="{StaticResource ModernTextBox}"
+                                <TextBox Style="{StaticResource ModernTextBox}"
+                                        Text="{Binding Settings.BusinessName}"
                                         Margin="0,0,0,16"/>
 
                                 <TextBlock Text="Email"
                                           FontWeight="SemiBold"
                                           Margin="0,0,0,8"/>
-                                <TextBox x:Name="EmailTextBox"
-                                        Style="{StaticResource ModernTextBox}"
+                                <TextBox Style="{StaticResource ModernTextBox}"
+                                        Text="{Binding Settings.Email}"
                                         Margin="0,0,0,16"/>
                             </StackPanel>
 
@@ -55,15 +55,15 @@
                                 <TextBlock Text="ABN"
                                           FontWeight="SemiBold"
                                           Margin="0,0,0,8"/>
-                                <TextBox x:Name="ABNTextBox"
-                                        Style="{StaticResource ModernTextBox}"
+                                <TextBox Style="{StaticResource ModernTextBox}"
+                                        Text="{Binding Settings.ABN}"
                                         Margin="0,0,0,16"/>
 
                                 <TextBlock Text="Phone"
                                           FontWeight="SemiBold"
                                           Margin="0,0,0,8"/>
-                                <TextBox x:Name="PhoneTextBox"
-                                        Style="{StaticResource ModernTextBox}"
+                                <TextBox Style="{StaticResource ModernTextBox}"
+                                        Text="{Binding Settings.Phone}"
                                         Margin="0,0,0,16"/>
                             </StackPanel>
                         </Grid>
@@ -71,8 +71,8 @@
                         <TextBlock Text="Business Address"
                                   FontWeight="SemiBold"
                                   Margin="0,0,0,8"/>
-                        <TextBox x:Name="AddressTextBox"
-                                Style="{StaticResource ModernTextBox}"
+                        <TextBox Style="{StaticResource ModernTextBox}"
+                                Text="{Binding Settings.BusinessAddress}"
                                 Height="80"
                                 AcceptsReturn="True"
                                 TextWrapping="Wrap"/>
@@ -97,24 +97,24 @@
                                 <TextBlock Text="Invoice Prefix"
                                           FontWeight="SemiBold"
                                           Margin="0,0,0,8"/>
-                                <TextBox x:Name="InvoicePrefixTextBox"
-                                        Style="{StaticResource ModernTextBox}"/>
+                                <TextBox Style="{StaticResource ModernTextBox}"
+                                        Text="{Binding Settings.InvoicePrefix}"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="2">
                                 <TextBlock Text="Next Invoice #"
                                           FontWeight="SemiBold"
                                           Margin="0,0,0,8"/>
-                                <TextBox x:Name="NextInvoiceNumberTextBox"
-                                        Style="{StaticResource ModernTextBox}"/>
+                                <TextBox Style="{StaticResource ModernTextBox}"
+                                        Text="{Binding Settings.NextInvoiceNumber}"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="4">
                                 <TextBlock Text="Payment Terms (Days)"
                                           FontWeight="SemiBold"
                                           Margin="0,0,0,8"/>
-                                <TextBox x:Name="PaymentTermsTextBox"
-                                        Style="{StaticResource ModernTextBox}"/>
+                                <TextBox Style="{StaticResource ModernTextBox}"
+                                        Text="{Binding Settings.DefaultPaymentTermsDays}"/>
                             </StackPanel>
                         </Grid>
                     </StackPanel>
@@ -128,8 +128,8 @@
                         <TextBlock Text="Default GST Rate (%)"
                                   FontWeight="SemiBold"
                                   Margin="0,0,0,8"/>
-                        <TextBox x:Name="DefaultGSTRateTextBox"
-                                Style="{StaticResource ModernTextBox}"
+                        <TextBox Style="{StaticResource ModernTextBox}"
+                                Text="{Binding Settings.DefaultGSTRate}"
                                 Width="200"
                                 HorizontalAlignment="Left"/>
                         <TextBlock Text="Default is 10% for most goods and services in Australia"
@@ -148,7 +148,7 @@
             <Button Content="Save Changes"
                    Style="{StaticResource ModernButton}"
                    Width="150"
-                   Click="SaveSettings_Click"/>
+                   Command="{Binding SaveSettingsCommand}"/>
         </StackPanel>
     </Grid>
 </Page>

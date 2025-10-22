@@ -1,0 +1,75 @@
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using AuroraInvoice.Models;
+using AuroraInvoice.Services.Interfaces;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+
+namespace AuroraInvoice.ViewModels;
+
+public partial class CustomersViewModel : ObservableObject
+{
+    private readonly ICustomerService _customerService;
+
+    [ObservableProperty]
+    private ObservableCollection<Customer> _customers = new();
+
+    [ObservableProperty]
+    private string _searchText = string.Empty;
+
+    public ICommand NewCustomerCommand { get; }
+    public ICommand<Customer> EditCustomerCommand { get; }
+    public ICommand<Customer> DeleteCustomerCommand { get; }
+
+    public CustomersViewModel(ICustomerService customerService)
+    {
+        _customerService = customerService;
+        NewCustomerCommand = new AsyncRelayCommand(CreateNewCustomer);
+        EditCustomerCommand = new AsyncRelayCommand<Customer>(EditCustomer);
+        DeleteCustomerCommand = new AsyncRelayCommand<Customer>(DeleteCustomer);
+
+        LoadCustomers();
+    }
+
+    private async Task LoadCustomers()
+    {
+        var (customers, totalCount) = await _customerService.SearchCustomersAsync(SearchText);
+        Customers = new ObservableCollection<Customer>(customers);
+    }
+
+    private async Task CreateNewCustomer()
+    {
+        // This will require a dialog service or other mechanism to show the dialog
+        // For now, we will just reload the customers
+        await LoadCustomers();
+    }
+
+    private async Task EditCustomer(Customer? customer)
+    {
+        if (customer == null) return;
+        // This will require a dialog service or other mechanism to show the dialog
+        // For now, we will just reload the customers
+        await LoadCustomers();
+    }
+
+    private async Task DeleteCustomer(Customer? customer)
+    {        
+        if (customer == null) return;
+
+        try
+        {
+            await _customerService.DeleteCustomerAsync(customer.Id);
+            await LoadCustomers();
+        }
+        catch (System.Exception)
+        {
+            // Handle exceptions (e.g., show a message to the user)
+        }
+    }
+
+    partial void OnSearchTextChanged(string value)
+    {
+        _ = LoadCustomers();
+    }
+}

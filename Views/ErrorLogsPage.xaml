@@ -4,8 +4,13 @@
       mc:Ignorable="d"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:converters="clr-namespace:AuroraInvoice.Converters"
       d:DesignHeight="800" d:DesignWidth="1000"
       Title="Error Logs">
+
+    <Page.Resources>
+        <converters:CountToVisibilityConverter x:Key="CountToVisibilityConverter"/>
+    </Page.Resources>
 
     <Grid Margin="40,30">
         <Grid.RowDefinitions>
@@ -32,11 +37,9 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <ComboBox x:Name="SeverityFilterComboBox"
-                     Grid.Column="0"
-                     Style="{StaticResource ModernComboBox}"
+            <ComboBox Style="{StaticResource ModernComboBox}"
                      Width="150"
-                     SelectionChanged="SeverityFilterComboBox_SelectionChanged">
+                     SelectedItem="{Binding SelectedSeverity}">
                 <ComboBoxItem Content="All Severity" IsSelected="True"/>
                 <ComboBoxItem Content="Critical"/>
                 <ComboBoxItem Content="Error"/>
@@ -47,20 +50,19 @@
             <Button Grid.Column="2"
                    Content="Refresh"
                    Style="{StaticResource SecondaryButton}"
-                   Click="Refresh_Click"/>
+                   Command="{Binding RefreshCommand}"/>
 
             <Button Grid.Column="4"
                    Content="Clear Old Logs"
                    Style="{StaticResource DangerButton}"
-                   Click="ClearOldLogs_Click"/>
+                   Command="{Binding ClearOldLogsCommand}"/>
         </Grid>
 
         <!-- Logs Grid -->
         <Border Grid.Row="2" Style="{StaticResource Card}">
             <Grid>
-                <DataGrid x:Name="LogsGrid"
-                         Style="{StaticResource ModernDataGrid}"
-                         MouseDoubleClick="LogsGrid_MouseDoubleClick">
+                <DataGrid ItemsSource="{Binding Logs}"
+                         Style="{StaticResource ModernDataGrid}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Timestamp" Binding="{Binding Timestamp, StringFormat=dd/MM/yyyy HH:mm:ss}" Width="150"/>
                         <DataGridTextColumn Header="Severity" Binding="{Binding Severity}" Width="80"/>
@@ -80,10 +82,9 @@
                 </DataGrid>
 
                 <!-- Empty State -->
-                <StackPanel x:Name="EmptyState"
-                           VerticalAlignment="Center"
+                <StackPanel VerticalAlignment="Center"
                            HorizontalAlignment="Center"
-                           Visibility="Collapsed">
+                           Visibility="{Binding Logs.Count, Converter={StaticResource CountToVisibilityConverter}}">
                     <TextBlock Text="No error logs"
                               FontSize="18"
                               FontWeight="SemiBold"

@@ -1,11 +1,16 @@
 <Page x:Class="AuroraInvoice.Views.CustomersPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      mc:Ignorable="d"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:converters="clr-namespace:AuroraInvoice.Converters"
+      mc:Ignorable="d"
       d:DesignHeight="800" d:DesignWidth="1000"
       Title="Customers">
+
+    <Page.Resources>
+        <converters:CountToVisibilityConverter x:Key="CountToVisibilityConverter"/>
+    </Page.Resources>
 
     <Grid Margin="40,30">
         <Grid.RowDefinitions>
@@ -29,12 +34,11 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBox x:Name="SearchBox"
-                    Grid.Column="0"
+            <TextBox Grid.Column="0"
                     Style="{StaticResource ModernTextBox}"
                     Width="300"
                     HorizontalAlignment="Left"
-                    TextChanged="SearchBox_TextChanged">
+                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
                 <TextBox.Tag>
                     <TextBlock Text="Search customers..."
                               Foreground="{StaticResource TextSecondaryBrush}"
@@ -46,16 +50,14 @@
             <Button Grid.Column="1"
                    Content="+ New Customer"
                    Style="{StaticResource ModernButton}"
-                   Click="NewCustomer_Click"/>
+                   Command="{Binding NewCustomerCommand}"/>
         </Grid>
 
         <!-- Customer List -->
         <Border Grid.Row="2" Style="{StaticResource Card}">
             <Grid>
-                <DataGrid x:Name="CustomersGrid"
-                         Style="{StaticResource ModernDataGrid}"
-                         SelectionChanged="CustomersGrid_SelectionChanged"
-                         MouseDoubleClick="CustomersGrid_MouseDoubleClick">
+                <DataGrid ItemsSource="{Binding Customers}"
+                         Style="{StaticResource ModernDataGrid}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
                         <DataGridTextColumn Header="Contact Person" Binding="{Binding ContactPerson}" Width="*"/>
@@ -70,13 +72,13 @@
                                                Style="{StaticResource SecondaryButton}"
                                                Padding="8,4"
                                                Margin="0,0,5,0"
-                                               Click="EditCustomer_Click"
-                                               Tag="{Binding}"/>
+                                               Command="{Binding DataContext.EditCustomerCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                               CommandParameter="{Binding}"/>
                                         <Button Content="Delete"
                                                Style="{StaticResource SecondaryButton}"
                                                Padding="8,4"
-                                               Click="DeleteCustomer_Click"
-                                               Tag="{Binding}"/>
+                                               Command="{Binding DataContext.DeleteCustomerCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                               CommandParameter="{Binding}"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -85,10 +87,9 @@
                 </DataGrid>
 
                 <!-- Empty State -->
-                <StackPanel x:Name="EmptyState"
-                           VerticalAlignment="Center"
+                <StackPanel VerticalAlignment="Center"
                            HorizontalAlignment="Center"
-                           Visibility="Collapsed">
+                           Visibility="{Binding Customers.Count, Converter={StaticResource CountToVisibilityConverter}}">
                     <TextBlock Text="No customers yet"
                               FontSize="18"
                               FontWeight="SemiBold"

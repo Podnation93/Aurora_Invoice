@@ -41,13 +41,11 @@
                         <TextBlock Text="Total Income"
                                   Style="{StaticResource SecondaryText}"
                                   Margin="0,0,0,8"/>
-                        <TextBlock x:Name="TotalIncomeText"
-                                  Text="$0.00"
+                        <TextBlock Text="{Binding Metrics.TotalIncome, StringFormat=C}"
                                   FontSize="32"
                                   FontWeight="Bold"
                                   Foreground="{StaticResource SuccessBrush}"/>
-                        <TextBlock x:Name="IncomeSubtitleText"
-                                  Text="This month"
+                        <TextBlock Text="This month"
                                   Style="{StaticResource SecondaryText}"
                                   FontSize="12"
                                   Margin="0,4,0,0"/>
@@ -60,13 +58,11 @@
                         <TextBlock Text="Total Expenses"
                                   Style="{StaticResource SecondaryText}"
                                   Margin="0,0,0,8"/>
-                        <TextBlock x:Name="TotalExpensesText"
-                                  Text="$0.00"
+                        <TextBlock Text="{Binding Metrics.TotalExpenses, StringFormat=C}"
                                   FontSize="32"
                                   FontWeight="Bold"
                                   Foreground="{StaticResource DangerBrush}"/>
-                        <TextBlock x:Name="ExpensesSubtitleText"
-                                  Text="This month"
+                        <TextBlock Text="This month"
                                   Style="{StaticResource SecondaryText}"
                                   FontSize="12"
                                   Margin="0,4,0,0"/>
@@ -79,13 +75,11 @@
                         <TextBlock Text="Net GST"
                                   Style="{StaticResource SecondaryText}"
                                   Margin="0,0,0,8"/>
-                        <TextBlock x:Name="NetGstText"
-                                  Text="$0.00"
+                        <TextBlock Text="{Binding Metrics.NetGst, StringFormat=C}"
                                   FontSize="32"
                                   FontWeight="Bold"
                                   Foreground="{StaticResource PrimaryBrush}"/>
-                        <TextBlock x:Name="GstSubtitleText"
-                                  Text="Payable/Refundable"
+                        <TextBlock Text="Payable/Refundable"
                                   Style="{StaticResource SecondaryText}"
                                   FontSize="12"
                                   Margin="0,4,0,0"/>
@@ -98,13 +92,11 @@
                         <TextBlock Text="Pending Invoices"
                                   Style="{StaticResource SecondaryText}"
                                   Margin="0,0,0,8"/>
-                        <TextBlock x:Name="PendingInvoicesText"
-                                  Text="0"
+                        <TextBlock Text="{Binding Metrics.PendingInvoices}"
                                   FontSize="32"
                                   FontWeight="Bold"
                                   Foreground="{StaticResource WarningBrush}"/>
-                        <TextBlock x:Name="PendingInvoicesSubtitleText"
-                                  Text="Awaiting payment"
+                        <TextBlock Text="Awaiting payment"
                                   Style="{StaticResource SecondaryText}"
                                   FontSize="12"
                                   Margin="0,4,0,0"/>
@@ -126,10 +118,9 @@
                         <TextBlock Text="Recent Invoices"
                                   Style="{StaticResource SubheaderText}"/>
 
-                        <DataGrid x:Name="RecentInvoicesGrid"
+                        <DataGrid ItemsSource="{Binding RecentInvoices}"
                                  Style="{StaticResource ModernDataGrid}"
-                                 Height="300"
-                                 SelectionChanged="RecentInvoicesGrid_SelectionChanged">
+                                 Height="300">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Invoice #" Binding="{Binding InvoiceNumber}" Width="Auto"/>
                                 <DataGridTextColumn Header="Customer" Binding="{Binding Customer.Name}" Width="*"/>
@@ -149,29 +140,24 @@
 
                         <Button Content="New Invoice"
                                Style="{StaticResource ModernButton}"
-                               Margin="0,0,0,12"
-                               Click="NewInvoice_Click"/>
+                               Margin="0,0,0,12"/>
 
                         <Button Content="New Customer"
                                Style="{StaticResource SecondaryButton}"
-                               Margin="0,0,0,12"
-                               Click="NewCustomer_Click"/>
+                               Margin="0,0,0,12"/>
 
                         <Button Content="Add Expense"
                                Style="{StaticResource SecondaryButton}"
-                               Margin="0,0,0,12"
-                               Click="AddExpense_Click"/>
+                               Margin="0,0,0,12"/>
 
                         <Separator Margin="0,12"/>
 
                         <Button Content="View Reports"
                                Style="{StaticResource SecondaryButton}"
-                               Margin="0,12,0,12"
-                               Click="ViewReports_Click"/>
+                               Margin="0,12,0,12"/>
 
                         <Button Content="Backup Data"
-                               Style="{StaticResource SecondaryButton}"
-                               Click="BackupData_Click"/>
+                               Style="{StaticResource SecondaryButton}"/>
                     </StackPanel>
                 </Border>
             </Grid>

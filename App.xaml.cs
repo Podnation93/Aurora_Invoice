@@ -68,6 +68,15 @@
 ﻿        services.AddTransient<SettingsPage>();
 ﻿        services.AddTransient<BackupPage>();
 ﻿        services.AddTransient<ErrorLogsPage>();
+
+        // Register ViewModels
+        services.AddTransient<CustomersViewModel>();
+        services.AddTransient<InvoicesViewModel>();
+        services.AddTransient<ExpensesViewModel>();
+        services.AddTransient<DashboardViewModel>();
+        services.AddTransient<SettingsViewModel>();
+        services.AddTransient<BackupViewModel>();
+        services.AddTransient<ErrorLogsViewModel>();
 ﻿    }
 ﻿
 ﻿    protected override void OnExit(ExitEventArgs e)

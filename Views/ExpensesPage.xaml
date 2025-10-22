@@ -1,11 +1,16 @@
 <Page x:Class="AuroraInvoice.Views.ExpensesPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      mc:Ignorable="d"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:converters="clr-namespace:AuroraInvoice.Converters"
+      mc:Ignorable="d"
       d:DesignHeight="800" d:DesignWidth="1000"
       Title="Expenses">
+
+    <Page.Resources>
+        <converters:CountToVisibilityConverter x:Key="CountToVisibilityConverter"/>
+    </Page.Resources>
 
     <Grid Margin="40,30">
         <Grid.RowDefinitions>
@@ -38,8 +43,7 @@
                     <TextBlock Text="Total Expenses (Month)"
                               Style="{StaticResource SecondaryText}"
                               FontSize="12"/>
-                    <TextBlock x:Name="TotalExpensesText"
-                              Text="$0.00"
+                    <TextBlock Text="{Binding TotalExpenses, StringFormat=C}"
                               FontSize="24"
                               FontWeight="Bold"
                               Foreground="{StaticResource DangerBrush}"
@@ -52,8 +56,7 @@
                     <TextBlock Text="GST Input Credits"
                               Style="{StaticResource SecondaryText}"
                               FontSize="12"/>
-                    <TextBlock x:Name="TotalGSTText"
-                              Text="$0.00"
+                    <TextBlock Text="{Binding TotalGst, StringFormat=C}"
                               FontSize="24"
                               FontWeight="Bold"
                               Foreground="{StaticResource SuccessBrush}"
@@ -66,8 +69,7 @@
                     <TextBlock Text="Expense Count"
                               Style="{StaticResource SecondaryText}"
                               FontSize="12"/>
-                    <TextBlock x:Name="ExpenseCountText"
-                              Text="0"
+                    <TextBlock Text="{Binding ExpenseCount}"
                               FontSize="24"
                               FontWeight="Bold"
                               Foreground="{StaticResource PrimaryBrush}"
@@ -86,20 +88,18 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <ComboBox x:Name="CategoryFilterComboBox"
-                     Grid.Column="0"
+            <ComboBox Grid.Column="0"
                      Style="{StaticResource ModernComboBox}"
                      Width="200"
-                     SelectionChanged="CategoryFilterComboBox_SelectionChanged">
-                <ComboBoxItem Content="All Categories" IsSelected="True"/>
-            </ComboBox>
+                     ItemsSource="{Binding Categories}"
+                     SelectedItem="{Binding SelectedCategory}"
+                     DisplayMemberPath="Name"/>
 
-            <TextBox x:Name="SearchBox"
-                    Grid.Column="2"
+            <TextBox Grid.Column="2"
                     Style="{StaticResource ModernTextBox}"
                     Width="300"
                     HorizontalAlignment="Left"
-                    TextChanged="SearchBox_TextChanged">
+                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
                 <TextBox.Tag>
                     <TextBlock Text="Search expenses..."
                               Foreground="{StaticResource TextSecondaryBrush}"
@@ -111,13 +111,13 @@
             <Button Grid.Column="4"
                    Content="+ New Expense"
                    Style="{StaticResource ModernButton}"
-                   Click="NewExpense_Click"/>
+                   Command="{Binding NewExpenseCommand}"/>
         </Grid>
 
         <!-- Expense List -->
         <Border Grid.Row="3" Style="{StaticResource Card}">
             <Grid>
-                <DataGrid x:Name="ExpensesGrid"
+                <DataGrid ItemsSource="{Binding Expenses}"
                          Style="{StaticResource ModernDataGrid}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=dd/MM/yyyy}" Width="Auto"/>
@@ -134,13 +134,13 @@
                                                Style="{StaticResource SecondaryButton}"
                                                Padding="8,4"
                                                Margin="0,0,5,0"
-                                               Click="EditExpense_Click"
-                                               Tag="{Binding}"/>
+                                               Command="{Binding DataContext.EditExpenseCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                               CommandParameter="{Binding}"/>
                                         <Button Content="Delete"
                                                Style="{StaticResource SecondaryButton}"
                                                Padding="8,4"
-                                               Click="DeleteExpense_Click"
-                                               Tag="{Binding}"/>
+                                               Command="{Binding DataContext.DeleteExpenseCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                               CommandParameter="{Binding}"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -149,10 +149,9 @@
                 </DataGrid>
 
                 <!-- Empty State -->
-                <StackPanel x:Name="EmptyState"
-                           VerticalAlignment="Center"
+                <StackPanel VerticalAlignment="Center"
                            HorizontalAlignment="Center"
-                           Visibility="Collapsed">
+                           Visibility="{Binding Expenses.Count, Converter={StaticResource CountToVisibilityConverter}}">
                     <TextBlock Text="No expenses recorded yet"
                               FontSize="18"
                               FontWeight="SemiBold"
