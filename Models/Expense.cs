@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using AuroraInvoice.Common;
 
 namespace AuroraInvoice.Models;
 
@@ -11,7 +12,7 @@ public class Expense
     [Key]
     public int Id { get; set; }
 
-    public DateTime Date { get; set; } = DateTime.Now;
+    public DateTime Date { get; set; } = DateTimeProvider.UtcNow;
 
     [Required]
     [MaxLength(200)]
@@ -45,7 +46,7 @@ public class Expense
     [MaxLength(1000)]
     public string? Notes { get; set; }
 
-    public DateTime CreatedDate { get; set; } = DateTime.Now;
+    public DateTime CreatedDate { get; set; } = DateTimeProvider.UtcNow;
 
     public DateTime? ModifiedDate { get; set; }
 }

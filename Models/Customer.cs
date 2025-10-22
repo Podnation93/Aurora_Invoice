@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using AuroraInvoice.Common;
 
 namespace AuroraInvoice.Models;
 
@@ -29,7 +30,7 @@ public class Customer
     [MaxLength(50)]
     public string? ABN { get; set; }
 
-    public DateTime CreatedDate { get; set; } = DateTime.Now;
+    public DateTime CreatedDate { get; set; } = DateTimeProvider.UtcNow;
 
     public DateTime? ModifiedDate { get; set; }
 

@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using AuroraInvoice.Common;
 
 namespace AuroraInvoice.Models;
 
@@ -21,9 +22,9 @@ public class Invoice
     [ForeignKey(nameof(CustomerId))]
     public Customer Customer { get; set; } = null!;
 
-    public DateTime InvoiceDate { get; set; } = DateTime.Now;
+    public DateTime InvoiceDate { get; set; } = DateTimeProvider.UtcNow;
 
-    public DateTime DueDate { get; set; } = DateTime.Now.AddDays(30);
+    public DateTime DueDate { get; set; } = DateTimeProvider.UtcNow.AddDays(30);
 
     [Required]
     public InvoiceStatus Status { get; set; } = InvoiceStatus.Draft;
@@ -40,7 +41,7 @@ public class Invoice
     [MaxLength(1000)]
     public string? Notes { get; set; }
 
-    public DateTime CreatedDate { get; set; } = DateTime.Now;
+    public DateTime CreatedDate { get; set; } = DateTimeProvider.UtcNow;
 
     public DateTime? ModifiedDate { get; set; }
 

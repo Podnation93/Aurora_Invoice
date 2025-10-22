@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using AuroraInvoice.Data;
 using AuroraInvoice.Models;
+using AuroraInvoice.Common;
 
 namespace AuroraInvoice.Services;
 
@@ -20,7 +21,7 @@ public class LoggingService
 
             var errorLog = new ErrorLog
             {
-                Timestamp = DateTime.Now,
+                Timestamp = DateTimeProvider.UtcNow,
                 Severity = "Error",
                 Source = source,
                 Message = ex.Message,
@@ -55,7 +56,7 @@ public class LoggingService
 
             var errorLog = new ErrorLog
             {
-                Timestamp = DateTime.Now,
+                Timestamp = DateTimeProvider.UtcNow,
                 Severity = "Critical",
                 Source = source,
                 Message = ex.Message,
@@ -88,7 +89,7 @@ public class LoggingService
 
             var errorLog = new ErrorLog
             {
-                Timestamp = DateTime.Now,
+                Timestamp = DateTimeProvider.UtcNow,
                 Severity = "Warning",
                 Source = source,
                 Message = message,
@@ -118,7 +119,7 @@ public class LoggingService
 
             var errorLog = new ErrorLog
             {
-                Timestamp = DateTime.Now,
+                Timestamp = DateTimeProvider.UtcNow,
                 Severity = "Info",
                 Source = source,
                 Message = message,
@@ -166,7 +167,7 @@ public class LoggingService
         try
         {
             using var context = new AuroraDbContext();
-            var cutoffDate = DateTime.Now.AddDays(-30);
+            var cutoffDate = DateTimeProvider.UtcNow.AddDays(-AppConstants.DefaultLogRetentionDays);
 
             var oldLogs = context.ErrorLogs
                 .Where(e => e.IsResolved && e.Timestamp < cutoffDate)
