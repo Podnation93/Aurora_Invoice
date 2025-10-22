@@ -17,6 +17,15 @@ public class AuroraDbContext : DbContext
     public DbSet<AppSettings> AppSettings => Set<AppSettings>();
     public DbSet<ErrorLog> ErrorLogs => Set<ErrorLog>();
     public DbSet<InvoiceTemplate> InvoiceTemplates => Set<InvoiceTemplate>();
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+
+    public AuroraDbContext()
+    {
+    }
+
+    public AuroraDbContext(DbContextOptions<AuroraDbContext> options) : base(options)
+    {
+    }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -34,7 +43,8 @@ public class AuroraDbContext : DbContext
                 Directory.CreateDirectory(directory);
             }
 
-            optionsBuilder.UseSqlite($"Data Source={dbPath}");
+            // Improved connection string for better concurrency
+            optionsBuilder.UseSqlite($"Data Source={dbPath};Cache=Shared;Mode=ReadWriteCreate");
         }
     }
 
