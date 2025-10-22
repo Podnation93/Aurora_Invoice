@@ -14,18 +14,20 @@ public partial class InvoiceDialog : Window
 {
     private readonly IDbContextFactory<AuroraDbContext> _contextFactory;
     private readonly ISettingsService _settingsService;
+    private readonly ILoggingService _loggingService;
     private Invoice? _invoice;
     private bool _isEditMode;
     private List<Customer> _customers;
     private ObservableCollection<InvoiceItem> _items = new();
     private readonly GstCalculationService _gstService;
 
-    public InvoiceDialog(List<Customer> customers, string nextInvoiceNumber, IDbContextFactory<AuroraDbContext> contextFactory, ISettingsService settingsService)
+    public InvoiceDialog(List<Customer> customers, string nextInvoiceNumber, IDbContextFactory<AuroraDbContext> contextFactory, ISettingsService settingsService, ILoggingService loggingService)
     {
         InitializeComponent();
         _customers = customers;
         _contextFactory = contextFactory;
         _settingsService = settingsService;
+        _loggingService = loggingService;
         _gstService = new GstCalculationService(_settingsService);
         _isEditMode = false;
         HeaderText.Text = "New Invoice";
@@ -41,13 +43,14 @@ public partial class InvoiceDialog : Window
         InvoiceNumberTextBox.Text = nextInvoiceNumber;
     }
 
-    public InvoiceDialog(Invoice invoice, List<Customer> customers, IDbContextFactory<AuroraDbContext> contextFactory, ISettingsService settingsService)
+    public InvoiceDialog(Invoice invoice, List<Customer> customers, IDbContextFactory<AuroraDbContext> contextFactory, ISettingsService settingsService, ILoggingService loggingService)
     {
         InitializeComponent();
         _invoice = invoice;
         _customers = customers;
         _contextFactory = contextFactory;
         _settingsService = settingsService;
+        _loggingService = loggingService;
         _gstService = new GstCalculationService(_settingsService);
         _isEditMode = true;
         HeaderText.Text = "Edit Invoice";
@@ -309,7 +312,7 @@ public partial class InvoiceDialog : Window
         }
         catch (Exception ex)
         {
-            await LoggingService.LogErrorAsync(ex, "InvoiceDialog.Save_Click");
+            await _loggingService.LogErrorAsync(ex, "InvoiceDialog.Save_Click");
             MessageBox.Show($"Error saving invoice: {ex.Message}", "Error",
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }

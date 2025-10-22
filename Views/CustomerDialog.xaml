@@ -34,37 +34,57 @@
                         Style="{StaticResource ModernTextBox}"
                         Margin="0,0,0,16"/>
 
-                <!-- Contact Person -->
-                <TextBlock Text="Contact Person"
-                          FontWeight="SemiBold"
-                          Margin="0,0,0,8"/>
-                <TextBox x:Name="ContactPersonTextBox"
-                        Style="{StaticResource ModernTextBox}"
-                        Margin="0,0,0,16"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                <!-- Email -->
-                <TextBlock Text="Email"
-                          FontWeight="SemiBold"
-                          Margin="0,0,0,8"/>
-                <TextBox x:Name="EmailTextBox"
-                        Style="{StaticResource ModernTextBox}"
-                        Margin="0,0,0,16"/>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Contact Person"
+                                  FontWeight="SemiBold"
+                                  Margin="0,0,0,8"/>
+                        <TextBox x:Name="ContactPersonTextBox"
+                                Style="{StaticResource ModernTextBox}"
+                                Margin="0,0,0,16"/>
+                    </StackPanel>
 
-                <!-- Phone -->
-                <TextBlock Text="Phone"
-                          FontWeight="SemiBold"
-                          Margin="0,0,0,8"/>
-                <TextBox x:Name="PhoneTextBox"
-                        Style="{StaticResource ModernTextBox}"
-                        Margin="0,0,0,16"/>
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="ABN (Australian Business Number)"
+                                  FontWeight="SemiBold"
+                                  Margin="0,0,0,8"/>
+                        <TextBox x:Name="ABNTextBox"
+                                Style="{StaticResource ModernTextBox}"
+                                Margin="0,0,0,16"/>
+                    </StackPanel>
+                </Grid>
 
-                <!-- ABN -->
-                <TextBlock Text="ABN (Australian Business Number)"
-                          FontWeight="SemiBold"
-                          Margin="0,0,0,8"/>
-                <TextBox x:Name="ABNTextBox"
-                        Style="{StaticResource ModernTextBox}"
-                        Margin="0,0,0,16"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Email"
+                                  FontWeight="SemiBold"
+                                  Margin="0,0,0,8"/>
+                        <TextBox x:Name="EmailTextBox"
+                                Style="{StaticResource ModernTextBox}"
+                                Margin="0,0,0,16"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Phone"
+                                  FontWeight="SemiBold"
+                                  Margin="0,0,0,8"/>
+                        <TextBox x:Name="PhoneTextBox"
+                                Style="{StaticResource ModernTextBox}"
+                                Margin="0,0,0,16"/>
+                    </StackPanel>
+                </Grid>
 
                 <!-- Address -->
                 <TextBlock Text="Address"

@@ -14,12 +14,14 @@ namespace AuroraInvoice.Services
         private readonly IDbContextFactory<AuroraDbContext> _contextFactory;
         private readonly ISettingsService _settingsService;
         private readonly IInvoiceService _invoiceService;
+        private readonly ILoggingService _loggingService;
 
-        public DialogService(IDbContextFactory<AuroraDbContext> contextFactory, ISettingsService settingsService, IInvoiceService invoiceService)
+        public DialogService(IDbContextFactory<AuroraDbContext> contextFactory, ISettingsService settingsService, IInvoiceService invoiceService, ILoggingService loggingService)
         {
             _contextFactory = contextFactory;
             _settingsService = settingsService;
             _invoiceService = invoiceService;
+            _loggingService = loggingService;
         }
 
         public bool? ShowCustomerDialog(Customer? customer = null)
@@ -43,11 +45,11 @@ namespace AuroraInvoice.Services
             ExpenseDialog dialog;
             if (expense == null)
             {
-                dialog = new ExpenseDialog(categories, _contextFactory, _settingsService);
+                dialog = new ExpenseDialog(categories, _contextFactory, _settingsService, _loggingService);
             }
             else
             {
-                dialog = new ExpenseDialog(expense, categories, _contextFactory, _settingsService);
+                dialog = new ExpenseDialog(expense, categories, _contextFactory, _settingsService, _loggingService);
             }
             return dialog.ShowDialog();
         }
@@ -60,11 +62,11 @@ namespace AuroraInvoice.Services
             if (invoice == null)
             {
                 var nextInvoiceNumber = Task.Run(() => _invoiceService.GetNextInvoiceNumberAsync()).GetAwaiter().GetResult();
-                dialog = new InvoiceDialog(customers, nextInvoiceNumber, _contextFactory, _settingsService);
+                dialog = new InvoiceDialog(customers, nextInvoiceNumber, _contextFactory, _settingsService, _loggingService);
             }
             else
             {
-                dialog = new InvoiceDialog(invoice, customers, _contextFactory, _settingsService);
+                dialog = new InvoiceDialog(invoice, customers, _contextFactory, _settingsService, _loggingService);
             }
             return dialog.ShowDialog();
         }

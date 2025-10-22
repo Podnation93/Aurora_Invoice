@@ -39,43 +39,48 @@
                                 <TextBlock Text="Business Name *"
                                           FontWeight="SemiBold"
                                           Margin="0,0,0,8"/>
-                                <TextBox Style="{StaticResource ModernTextBox}"
-                                        Text="{Binding Settings.BusinessName}"
-                                        Margin="0,0,0,16"/>
+                                <TextBox x:Name="BusinessNameTextBox" Style="{StaticResource ModernTextBox}"
+                                        Text="{Binding BusinessName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                        Margin="0,0,0,0"/>
+                                <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=BusinessNameTextBox}" Style="{StaticResource ErrorTextStyle}"/>
 
                                 <TextBlock Text="Email"
                                           FontWeight="SemiBold"
-                                          Margin="0,0,0,8"/>
-                                <TextBox Style="{StaticResource ModernTextBox}"
-                                        Text="{Binding Settings.Email}"
-                                        Margin="0,0,0,16"/>
+                                          Margin="0,16,0,8"/>
+                                <TextBox x:Name="EmailTextBox" Style="{StaticResource ModernTextBox}"
+                                        Text="{Binding Email, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                        Margin="0,0,0,0"/>
+                                <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=EmailTextBox}" Style="{StaticResource ErrorTextStyle}"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="2">
                                 <TextBlock Text="ABN"
                                           FontWeight="SemiBold"
                                           Margin="0,0,0,8"/>
-                                <TextBox Style="{StaticResource ModernTextBox}"
-                                        Text="{Binding Settings.ABN}"
-                                        Margin="0,0,0,16"/>
+                                <TextBox x:Name="ABNTextBox" Style="{StaticResource ModernTextBox}"
+                                        Text="{Binding ABN, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                        Margin="0,0,0,0"/>
+                                <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=ABNTextBox}" Style="{StaticResource ErrorTextStyle}"/>
 
                                 <TextBlock Text="Phone"
                                           FontWeight="SemiBold"
-                                          Margin="0,0,0,8"/>
-                                <TextBox Style="{StaticResource ModernTextBox}"
-                                        Text="{Binding Settings.Phone}"
-                                        Margin="0,0,0,16"/>
+                                          Margin="0,16,0,8"/>
+                                <TextBox x:Name="PhoneTextBox" Style="{StaticResource ModernTextBox}"
+                                        Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                        Margin="0,0,0,0"/>
+                                <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=PhoneTextBox}" Style="{StaticResource ErrorTextStyle}"/>
                             </StackPanel>
                         </Grid>
 
                         <TextBlock Text="Business Address"
                                   FontWeight="SemiBold"
-                                  Margin="0,0,0,8"/>
-                        <TextBox Style="{StaticResource ModernTextBox}"
-                                Text="{Binding Settings.BusinessAddress}"
+                                  Margin="0,16,0,8"/>
+                        <TextBox x:Name="AddressTextBox" Style="{StaticResource ModernTextBox}"
+                                Text="{Binding BusinessAddress, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                 Height="80"
                                 AcceptsReturn="True"
                                 TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=AddressTextBox}" Style="{StaticResource ErrorTextStyle}"/>
                     </StackPanel>
                 </Border>
 
@@ -97,24 +102,27 @@
                                 <TextBlock Text="Invoice Prefix"
                                           FontWeight="SemiBold"
                                           Margin="0,0,0,8"/>
-                                <TextBox Style="{StaticResource ModernTextBox}"
-                                        Text="{Binding Settings.InvoicePrefix}"/>
+                                <TextBox x:Name="InvoicePrefixTextBox" Style="{StaticResource ModernTextBox}"
+                                        Text="{Binding InvoicePrefix, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                                <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=InvoicePrefixTextBox}" Style="{StaticResource ErrorTextStyle}"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="2">
                                 <TextBlock Text="Next Invoice #"
                                           FontWeight="SemiBold"
                                           Margin="0,0,0,8"/>
-                                <TextBox Style="{StaticResource ModernTextBox}"
-                                        Text="{Binding Settings.NextInvoiceNumber}"/>
+                                <TextBox x:Name="NextInvoiceNumberTextBox" Style="{StaticResource ModernTextBox}"
+                                        Text="{Binding NextInvoiceNumber, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                                <TextBlock Text="{Binding (Validation.Errors)[0.ErrorContent, ElementName=NextInvoiceNumberTextBox}" Style="{StaticResource ErrorTextStyle}"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="4">
                                 <TextBlock Text="Payment Terms (Days)"
                                           FontWeight="SemiBold"
                                           Margin="0,0,0,8"/>
-                                <TextBox Style="{StaticResource ModernTextBox}"
-                                        Text="{Binding Settings.DefaultPaymentTermsDays}"/>
+                                <TextBox x:Name="PaymentTermsTextBox" Style="{StaticResource ModernTextBox}"
+                                        Text="{Binding DefaultPaymentTermsDays, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                                <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=PaymentTermsTextBox}" Style="{StaticResource ErrorTextStyle}"/>
                             </StackPanel>
                         </Grid>
                     </StackPanel>
@@ -128,10 +136,11 @@
                         <TextBlock Text="Default GST Rate (%)"
                                   FontWeight="SemiBold"
                                   Margin="0,0,0,8"/>
-                        <TextBox Style="{StaticResource ModernTextBox}"
-                                Text="{Binding Settings.DefaultGSTRate}"
+                        <TextBox x:Name="DefaultGSTRateTextBox" Style="{StaticResource ModernTextBox}"
+                                Text="{Binding DefaultGSTRate, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                 Width="200"
                                 HorizontalAlignment="Left"/>
+                        <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=DefaultGSTRateTextBox}" Style="{StaticResource ErrorTextStyle}"/>
                         <TextBlock Text="Default is 10% for most goods and services in Australia"
                                   FontSize="12"
                                   Foreground="{StaticResource TextSecondaryBrush}"

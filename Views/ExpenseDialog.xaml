@@ -24,11 +24,31 @@
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <StackPanel>
-                <TextBlock Text="Date *"
-                          FontWeight="SemiBold"
-                          Margin="0,0,0,8"/>
-                <DatePicker x:Name="DatePicker"
-                           Margin="0,0,0,16"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Date *"
+                                  FontWeight="SemiBold"
+                                  Margin="0,0,0,8"/>
+                        <DatePicker x:Name="DatePicker"
+                                   Margin="0,0,0,16"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Category *"
+                                  FontWeight="SemiBold"
+                                  Margin="0,0,0,8"/>
+                        <ComboBox x:Name="CategoryComboBox"
+                                 Style="{StaticResource ModernComboBox}"
+                                 DisplayMemberPath="Name"
+                                 Margin="0,0,0,16"/>
+                    </StackPanel>
+                </Grid>
 
                 <TextBlock Text="Vendor *"
                           FontWeight="SemiBold"
@@ -46,14 +66,6 @@
                         AcceptsReturn="True"
                         TextWrapping="Wrap"
                         Margin="0,0,0,16"/>
-
-                <TextBlock Text="Category *"
-                          FontWeight="SemiBold"
-                          Margin="0,0,0,8"/>
-                <ComboBox x:Name="CategoryComboBox"
-                         Style="{StaticResource ModernComboBox}"
-                         DisplayMemberPath="Name"
-                         Margin="0,0,0,16"/>
 
                 <TextBlock Text="Amount (including GST) *"
                           FontWeight="SemiBold"

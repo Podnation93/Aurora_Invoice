@@ -1,6 +1,6 @@
 # Aurora Invoice
 
-![Aurora Invoice](https://img.shields.io/badge/version-1.0.0--alpha-blue)
+![Aurora Invoice](https://img.shields.io/badge/version-1.0.0-blue)
 ![.NET](https://img.shields.io/badge/.NET-9.0-purple)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
@@ -8,60 +8,18 @@
 
 ## Features
 
-### Current Features (v1.0.0-alpha)
-
-- **Modern UI/UX**: Clean, beautiful interface with dark sidebar navigation and modern design principles
-- **Dashboard**: At-a-glance overview of key business metrics
-  - Total income and expenses (monthly view)
-  - Net GST position (payable/refundable)
-  - Pending invoices count
-  - Recent invoice activity
-- **Database Management**: SQLite-based local database with Entity Framework Core
-- **GST Calculation Engine**: Automated GST calculations for Australian businesses
-- **Navigation System**: Easy-to-use sidebar navigation between all main sections
-
-### Planned Features
-
-- **Invoice Generation & Management**
-  - Create professional invoices with customizable templates
-  - Support for ABN, customer details, itemized services
-  - Multiple GST rates (10% standard, GST-free items)
-  - Track invoice status (Draft, Sent, Paid, Overdue)
-  - PDF export and printing
-
-- **Customer Management**
-  - Comprehensive customer database
-  - Store ABN, contact details, address information
-  - Quick customer selection for invoices
-
-- **Expense Tracking**
-  - Record business expenses with GST component
-  - Pre-defined and customizable expense categories
-  - Attach receipts and supporting documents
-  - Filter by date, category, or vendor
-  - Automatic GST input tax credit calculations
-
-- **Tax Tracking (GST)**
-  - Automated GST calculation on invoices and expenses
-  - Net GST position reporting
-  - BAS (Business Activity Statement) support
-
-- **Reporting**
-  - Yearly Financial Report
-  - Invoice Activity Report
-  - Expense Report by category/vendor
-  - GST Summary Report
-
-- **Local Backup & Restore**
-  - One-click backup to local folder
-  - Easy restore functionality
-  - Scheduled automatic backups
-
-- **Customization**
-  - Customizable invoice templates
-  - Business logo and branding
-  - Theme colors
-  - Invoice numbering preferences
+- **Modern UI/UX**: Clean, beautiful interface with dark sidebar navigation and modern design principles.
+- **Dashboard**: At-a-glance overview of key business metrics, including monthly income, expenses, and net GST position.
+- **Invoice Management**: Create, edit, and manage professional invoices with customizable templates. Track invoice status (Draft, Sent, Paid, Overdue) and export to PDF.
+- **Customer Management**: Maintain a comprehensive customer database with contact details, ABN, and address information.
+- **Expense Tracking**: Record and categorize business expenses with GST calculations for accurate input tax credit tracking.
+- **Financial Reporting**: Generate key financial reports:
+  - **GST Summary Report**: View GST collected and paid for a selected period.
+  - **Yearly Financial Report**: A complete financial summary for any given year.
+  - **Invoice Activity Report**: An overview of all invoice activity within a date range.
+  - **Expense Report**: A detailed breakdown of expenses by category.
+- **Local Backup & Restore**: One-click backup and restore functionality to keep your data safe.
+- **Robust Architecture**: Built with a modern MVVM architecture, dependency injection, and a service-oriented approach for maintainability and testability.
 
 ## Technology Stack
 
@@ -69,6 +27,7 @@
 - **UI Framework**: WPF (Windows Presentation Foundation)
 - **Database**: SQLite with Entity Framework Core
 - **MVVM Toolkit**: CommunityToolkit.Mvvm
+- **Dependency Injection**: Microsoft.Extensions.DependencyInjection
 - **PDF Generation**: QuestPDF
 - **Architecture**: MVVM (Model-View-ViewModel)
 
@@ -82,10 +41,10 @@
 
 ### For Users
 
-1. Download the latest release from the [Releases](https://github.com/yourusername/aurora-invoice/releases) page
-2. Extract the ZIP file to your preferred location
-3. Run `AuroraInvoice.exe`
-4. The application will automatically create a database on first run
+1. Download the latest release from the [Releases](https://github.com/yourusername/aurora-invoice/releases) page.
+2. Extract the ZIP file to your preferred location.
+3. Run `AuroraInvoice.exe`.
+4. The application will automatically create a database on first run.
 
 ### For Developers
 
@@ -121,24 +80,15 @@
 
 ```
 AuroraInvoice/
+├── Converters/             # Value converters for XAML data binding
 ├── Data/                   # Database context and configurations
 ├── Models/                 # Data models (Customer, Invoice, Expense, etc.)
-├── Views/                  # XAML pages and user interfaces
-├── ViewModels/             # View models for MVVM pattern
 ├── Services/               # Business logic services
-├── Helpers/                # Utility classes and helpers
+├── ViewModels/             # View models for MVVM pattern
+├── Views/                  # XAML pages and user interfaces
 ├── Resources/              # Styles, themes, and resources
 └── Migrations/             # Entity Framework migrations
 ```
-
-### Key Components
-
-- **AuroraDbContext**: Entity Framework database context
-- **Models**: Customer, Invoice, InvoiceItem, Expense, ExpenseCategory, AppSettings
-- **Services**:
-  - `DatabaseService`: Database initialization and management
-  - `GstCalculationService`: GST calculations
-  - `BackupService`: Backup and restore functionality
 
 ### Database
 
@@ -158,59 +108,23 @@ dotnet ef database update
 
 ## Contributing
 
-We welcome contributions from the community! Here's how you can help:
-
-### Getting Started
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Commit your changes (`git commit -m 'Add some amazing feature'`)
-5. Push to the branch (`git push origin feature/amazing-feature`)
-6. Open a Pull Request
-
-### Contribution Guidelines
-
-- **Code Style**: Follow C# coding conventions and use meaningful variable names
-- **Comments**: Add XML documentation comments for public methods and classes
-- **Testing**: Test your changes thoroughly before submitting
-- **Commits**: Write clear, concise commit messages
-- **Pull Requests**: Provide a clear description of what your PR does
-
-### Areas to Contribute
-
-- Complete the Invoice Management page
-- Implement Customer CRUD operations
-- Build the Expense Tracking functionality
-- Create PDF invoice templates
-- Develop the Reporting system
-- Improve UI/UX design
-- Add unit tests
-- Write documentation
-- Fix bugs
+We welcome contributions from the community! Please follow the standard fork, branch, and pull request workflow.
 
 ## Roadmap
 
-### Phase 1 (Current - Alpha)
+### Version 1.0 (Current)
 - [x] Project setup and architecture
 - [x] Database models and migrations
 - [x] Main window and navigation
-- [x] Dashboard with basic metrics
-- [ ] Customer management (CRUD)
-- [ ] Basic invoice creation
-
-### Phase 2 (Beta)
-- [ ] Complete invoice management
-- [ ] Expense tracking
-- [ ] PDF export functionality
-- [ ] Basic reporting
-
-### Phase 3 (v1.0)
-- [ ] Advanced reporting (Yearly, GST, BAS)
-- [ ] Backup and restore
-- [ ] Customizable templates
-- [ ] Settings and preferences
-- [ ] Polish and bug fixes
+- [x] Dashboard with key metrics
+- [x] Customer management (CRUD)
+- [x] Invoice management (CRUD)
+- [x] Expense tracking (CRUD)
+- [x] PDF export for invoices
+- [x] All reporting features (GST, Yearly, Invoice, Expense)
+- [x] Backup and restore functionality
+- [x] Settings and preferences
+- [x] MVVM and DI refactoring
 
 ### Future Enhancements
 - Multi-currency support
@@ -227,15 +141,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgments
 
 - Built with [.NET](https://dotnet.microsoft.com/)
-- UI inspiration from modern design principles
 - PDF generation powered by [QuestPDF](https://www.questpdf.com/)
-- Icons and styling using WPF Material Design principles
-
-## Support
-
-- **Issues**: Report bugs or request features via [GitHub Issues](https://github.com/yourusername/aurora-invoice/issues)
-- **Discussions**: Join our [GitHub Discussions](https://github.com/yourusername/aurora-invoice/discussions)
-- **Documentation**: Check the [Wiki](https://github.com/yourusername/aurora-invoice/wiki) for detailed guides
 
 ## Screenshots
 

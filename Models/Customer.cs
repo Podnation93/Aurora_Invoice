@@ -24,6 +24,7 @@ public class Customer
     [MaxLength(50)]
     public string? Phone { get; set; }
 
+    [EmailAddress]
     [MaxLength(200)]
     public string? Email { get; set; }
 

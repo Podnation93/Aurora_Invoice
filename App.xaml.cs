@@ -91,6 +91,7 @@
 
         // Dialogs
         services.AddSingleton<IDialogService, DialogService>();
+        services.AddSingleton<ILoggingService, LoggingService>();
 ﻿    }
 ﻿
 ﻿    protected override void OnExit(ExitEventArgs e)

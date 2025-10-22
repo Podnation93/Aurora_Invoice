@@ -27,9 +27,11 @@ public class InvoiceItem
     public DateTime? ServiceDate { get; set; }
 
     [Column(TypeName = "decimal(18,2)")]
+    [Range(0.01, double.MaxValue, ErrorMessage = "Quantity must be greater than zero.")]
     public decimal Quantity { get; set; }
 
     [Column(TypeName = "decimal(18,2)")]
+    [Range(0.00, double.MaxValue, ErrorMessage = "Unit Price cannot be negative.")]
     public decimal UnitPrice { get; set; }
 
     /// <summary>

@@ -23,6 +23,7 @@ public class Expense
     public string Description { get; set; } = string.Empty;
 
     [Column(TypeName = "decimal(18,2)")]
+    [Range(0.01, double.MaxValue, ErrorMessage = "Amount must be greater than zero.")]
     public decimal Amount { get; set; }
 
     /// <summary>

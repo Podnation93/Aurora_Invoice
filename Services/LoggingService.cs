@@ -2,22 +2,25 @@ using System.Diagnostics;
 using AuroraInvoice.Data;
 using AuroraInvoice.Models;
 using AuroraInvoice.Common;
+using AuroraInvoice.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace AuroraInvoice.Services;
 
-/// <summary>
-/// Service for logging errors and events to the database
-/// </summary>
-public class LoggingService
+public class LoggingService : ILoggingService
 {
-    /// <summary>
-    /// Log an error to the database
-    /// </summary>
-    public static async Task LogErrorAsync(Exception ex, string source, string? userAction = null)
+    private readonly IDbContextFactory<AuroraDbContext> _contextFactory;
+
+    public LoggingService(IDbContextFactory<AuroraDbContext> contextFactory)
+    {
+        _contextFactory = contextFactory;
+    }
+
+    public async Task LogErrorAsync(Exception ex, string source, string? userAction = null)
     {
         try
         {
-            using var context = new AuroraDbContext();
+            using var context = _contextFactory.CreateDbContext();
 
             var errorLog = new ErrorLog
             {
@@ -34,25 +37,20 @@ public class LoggingService
             context.ErrorLogs.Add(errorLog);
             await context.SaveChangesAsync();
 
-            // Also write to debug output
             Debug.WriteLine($"[ERROR] {source}: {ex.Message}");
         }
         catch (Exception loggingEx)
         {
-            // If logging fails, write to debug output
             Debug.WriteLine($"[LOGGING FAILED] {loggingEx.Message}");
             Debug.WriteLine($"[ORIGINAL ERROR] {source}: {ex.Message}");
         }
     }
 
-    /// <summary>
-    /// Log a critical error to the database
-    /// </summary>
-    public static async Task LogCriticalAsync(Exception ex, string source, string? userAction = null)
+    public async Task LogCriticalAsync(Exception ex, string source, string? userAction = null)
     {
         try
         {
-            using var context = new AuroraDbContext();
+            using var context = _contextFactory.CreateDbContext();
 
             var errorLog = new ErrorLog
             {
@@ -78,14 +76,11 @@ public class LoggingService
         }
     }
 
-    /// <summary>
-    /// Log a warning to the database
-    /// </summary>
-    public static async Task LogWarningAsync(string message, string source, string? additionalInfo = null)
+    public async Task LogWarningAsync(string message, string source, string? additionalInfo = null)
     {
         try
         {
-            using var context = new AuroraDbContext();
+            using var context = _contextFactory.CreateDbContext();
 
             var errorLog = new ErrorLog
             {
@@ -108,14 +103,11 @@ public class LoggingService
         }
     }
 
-    /// <summary>
-    /// Log informational message to the database
-    /// </summary>
-    public static async Task LogInfoAsync(string message, string source, string? additionalInfo = null)
+    public async Task LogInfoAsync(string message, string source, string? additionalInfo = null)
     {
         try
         {
-            using var context = new AuroraDbContext();
+            using var context = _contextFactory.CreateDbContext();
 
             var errorLog = new ErrorLog
             {
@@ -138,51 +130,28 @@ public class LoggingService
         }
     }
 
-    /// <summary>
-    /// Get recent error logs
-    /// </summary>
-    public static async Task<List<ErrorLog>> GetRecentErrorsAsync(int count = 100)
+    public async Task<System.Collections.Generic.List<ErrorLog>> GetRecentErrorsAsync(int count = 100)
     {
-        try
-        {
-            using var context = new AuroraDbContext();
-            return await Task.Run(() =>
-                context.ErrorLogs
-                    .OrderByDescending(e => e.Timestamp)
-                    .Take(count)
-                    .ToList()
-            );
-        }
-        catch
-        {
-            return new List<ErrorLog>();
-        }
+        using var context = _contextFactory.CreateDbContext();
+        return await context.ErrorLogs
+            .OrderByDescending(e => e.Timestamp)
+            .Take(count)
+            .ToListAsync();
     }
 
-    /// <summary>
-    /// Clear old resolved logs (keeps last 30 days)
-    /// </summary>
-    public static async Task CleanupOldLogsAsync()
+    public async Task CleanupOldLogsAsync()
     {
-        try
-        {
-            using var context = new AuroraDbContext();
-            var cutoffDate = DateTimeProvider.UtcNow.AddDays(-AppConstants.DefaultLogRetentionDays);
+        using var context = _contextFactory.CreateDbContext();
+        var cutoffDate = DateTimeProvider.UtcNow.AddDays(-AppConstants.DefaultLogRetentionDays);
 
-            var oldLogs = context.ErrorLogs
-                .Where(e => e.IsResolved && e.Timestamp < cutoffDate)
-                .ToList();
+        var oldLogs = await context.ErrorLogs
+            .Where(e => e.IsResolved && e.Timestamp < cutoffDate)
+            .ToListAsync();
 
-            if (oldLogs.Any())
-            {
-                context.ErrorLogs.RemoveRange(oldLogs);
-                await context.SaveChangesAsync();
-                Debug.WriteLine($"[CLEANUP] Removed {oldLogs.Count} old log entries");
-            }
-        }
-        catch (Exception ex)
+        if (oldLogs.Any())
         {
-            Debug.WriteLine($"[CLEANUP FAILED] {ex.Message}");
+            context.ErrorLogs.RemoveRange(oldLogs);
+            await context.SaveChangesAsync();
         }
     }
 }

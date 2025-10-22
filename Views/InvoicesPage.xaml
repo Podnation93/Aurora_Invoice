@@ -150,24 +150,28 @@
                                                Padding="8,4"
                                                Margin="0,0,5,0"
                                                Command="{Binding DataContext.PreviewInvoiceCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                               CommandParameter="{Binding}"/>
+                                               CommandParameter="{Binding}"
+                                               ToolTip="Preview the invoice as a PDF"/>
                                         <Button Content="Download PDF"
                                                Style="{StaticResource SecondaryButton}"
                                                Padding="8,4"
                                                Margin="0,0,5,0"
                                                Command="{Binding DataContext.DownloadInvoiceCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                               CommandParameter="{Binding}"/>
+                                               CommandParameter="{Binding}"
+                                               ToolTip="Download the invoice as a PDF file"/>
                                         <Button Content="Edit"
                                                Style="{StaticResource SecondaryButton}"
                                                Padding="8,4"
                                                Margin="0,0,5,0"
                                                Command="{Binding DataContext.EditInvoiceCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                               CommandParameter="{Binding}"/>
+                                               CommandParameter="{Binding}"
+                                               ToolTip="Edit this invoice"/>
                                         <Button Content="Delete"
                                                Style="{StaticResource SecondaryButton}"
                                                Padding="8,4"
                                                Command="{Binding DataContext.DeleteInvoiceCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                               CommandParameter="{Binding}"/>
+                                               CommandParameter="{Binding}"
+                                               ToolTip="Delete this invoice"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>

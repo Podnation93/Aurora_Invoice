@@ -11,17 +11,19 @@ public partial class ExpenseDialog : Window
 {
     private readonly IDbContextFactory<AuroraDbContext> _contextFactory;
     private readonly ISettingsService _settingsService;
+    private readonly ILoggingService _loggingService;
     private Expense? _expense;
     private bool _isEditMode;
     private List<ExpenseCategory> _categories;
     private readonly GstCalculationService _gstService;
 
-    public ExpenseDialog(List<ExpenseCategory> categories, IDbContextFactory<AuroraDbContext> contextFactory, ISettingsService settingsService)
+    public ExpenseDialog(List<ExpenseCategory> categories, IDbContextFactory<AuroraDbContext> contextFactory, ISettingsService settingsService, ILoggingService loggingService)
     {
         InitializeComponent();
         _categories = categories;
         _contextFactory = contextFactory;
         _settingsService = settingsService;
+        _loggingService = loggingService;
         _gstService = new GstCalculationService(_settingsService);
         _isEditMode = false;
         HeaderText.Text = "New Expense";
@@ -32,13 +34,14 @@ public partial class ExpenseDialog : Window
         DatePicker.SelectedDate = DateTimeProvider.UtcNow.Date;
     }
 
-    public ExpenseDialog(Expense expense, List<ExpenseCategory> categories, IDbContextFactory<AuroraDbContext> contextFactory, ISettingsService settingsService)
+    public ExpenseDialog(Expense expense, List<ExpenseCategory> categories, IDbContextFactory<AuroraDbContext> contextFactory, ISettingsService settingsService, ILoggingService loggingService)
     {
         InitializeComponent();
         _expense = expense;
         _categories = categories;
         _contextFactory = contextFactory;
         _settingsService = settingsService;
+        _loggingService = loggingService;
         _gstService = new GstCalculationService(_settingsService);
         _isEditMode = true;
         HeaderText.Text = "Edit Expense";
@@ -155,7 +158,7 @@ public partial class ExpenseDialog : Window
         }
         catch (Exception ex)
         {
-            await LoggingService.LogErrorAsync(ex, "ExpenseDialog.Save_Click");
+            await _loggingService.LogErrorAsync(ex, "ExpenseDialog.Save_Click");
             MessageBox.Show($"Error saving expense: {ex.Message}", "Error",
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }

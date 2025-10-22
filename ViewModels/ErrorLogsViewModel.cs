@@ -11,6 +11,8 @@ namespace AuroraInvoice.ViewModels;
 
 public partial class ErrorLogsViewModel : ObservableObject
 {
+    private readonly ILoggingService _loggingService;
+
     [ObservableProperty]
     private ObservableCollection<ErrorLog> _logs = new();
 
@@ -20,8 +22,9 @@ public partial class ErrorLogsViewModel : ObservableObject
     public ICommand RefreshCommand { get; }
     public ICommand ClearOldLogsCommand { get; }
 
-    public ErrorLogsViewModel()
+    public ErrorLogsViewModel(ILoggingService loggingService)
     {
+        _loggingService = loggingService;
         RefreshCommand = new AsyncRelayCommand(LoadLogs);
         ClearOldLogsCommand = new AsyncRelayCommand(ClearOldLogs);
         LoadLogs();
@@ -29,7 +32,7 @@ public partial class ErrorLogsViewModel : ObservableObject
 
     private async Task LoadLogs()
     {
-        var allLogs = await LoggingService.GetRecentErrorsAsync(500);
+        var allLogs = await _loggingService.GetRecentErrorsAsync(500);
         var filteredLogs = allLogs.AsEnumerable();
 
         if (!string.IsNullOrEmpty(SelectedSeverity) && SelectedSeverity != "All Severity")
@@ -42,7 +45,7 @@ public partial class ErrorLogsViewModel : ObservableObject
 
     private async Task ClearOldLogs()
     {
-        await LoggingService.CleanupOldLogsAsync();
+        await _loggingService.CleanupOldLogsAsync();
         await LoadLogs();
     }
 

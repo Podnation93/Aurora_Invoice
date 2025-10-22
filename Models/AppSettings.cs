@@ -35,11 +35,13 @@ public class AppSettings
     [MaxLength(20)]
     public string? InvoicePrefix { get; set; } = "INV-";
 
+    [Range(1, int.MaxValue, ErrorMessage = "Next invoice number must be greater than zero.")]
     public int NextInvoiceNumber { get; set; } = 1;
 
     public int DefaultPaymentTermsDays { get; set; } = 30;
 
     // Default GST Rate (as decimal, e.g., 0.10 for 10%)
+    [Range(0, 1, ErrorMessage = "GST Rate must be between 0 and 1.")]
     public decimal DefaultGSTRate { get; set; } = 0.10m;
 
     // Backup Settings
