@@ -1,19 +1,29 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Microsoft.EntityFrameworkCore;
-using AuroraInvoice.Data;
 using AuroraInvoice.Models;
+using AuroraInvoice.Services;
+using AuroraInvoice.Services.Interfaces;
+using AuroraInvoice.Common;
 
 namespace AuroraInvoice.Views;
 
 public partial class CustomersPage : Page
 {
-    private List<Customer> _allCustomers = new();
+    private readonly ICustomerService _customerService;
+    private int _currentPage = 1;
+    private readonly int _pageSize = AppConstants.DefaultPageSize;
+    private int _totalCount = 0;
+    private string _currentSearchText = string.Empty;
 
     public CustomersPage()
     {
         InitializeComponent();
+
+        // Initialize services
+        var auditService = new AuditService();
+        _customerService = new CustomerService(auditService);
+
         Loaded += CustomersPage_Loaded;
     }
 
@@ -26,43 +36,44 @@ public partial class CustomersPage : Page
     {
         try
         {
-            using var context = new AuroraDbContext();
-            _allCustomers = await context.Customers
-                .OrderBy(c => c.Name)
-                .ToListAsync();
+            List<Customer> customers;
 
-            CustomersGrid.ItemsSource = _allCustomers;
+            if (string.IsNullOrWhiteSpace(_currentSearchText))
+            {
+                var result = await _customerService.GetCustomersAsync(_currentPage, _pageSize);
+                customers = result.Customers;
+                _totalCount = result.TotalCount;
+            }
+            else
+            {
+                var result = await _customerService.SearchCustomersAsync(_currentSearchText, _currentPage, _pageSize);
+                customers = result.Customers;
+                _totalCount = result.TotalCount;
+            }
+
+            CustomersGrid.ItemsSource = customers;
 
             // Show/hide empty state
-            EmptyState.Visibility = _allCustomers.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-            CustomersGrid.Visibility = _allCustomers.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+            EmptyState.Visibility = customers.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            CustomersGrid.Visibility = customers.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+
+            // Update pagination info if you have UI for it
+            // UpdatePaginationInfo();
         }
         catch (Exception ex)
         {
+            await LoggingService.LogErrorAsync(ex, "CustomersPage.LoadCustomersAsync");
             MessageBox.Show($"Error loading customers: {ex.Message}", "Error",
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
-    private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+    private async void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
     {
-        var searchText = SearchBox.Text.ToLower();
+        _currentSearchText = SearchBox.Text;
+        _currentPage = 1; // Reset to first page when searching
 
-        if (string.IsNullOrWhiteSpace(searchText))
-        {
-            CustomersGrid.ItemsSource = _allCustomers;
-        }
-        else
-        {
-            var filtered = _allCustomers.Where(c =>
-                c.Name.ToLower().Contains(searchText) ||
-                (c.ContactPerson?.ToLower().Contains(searchText) ?? false) ||
-                (c.Email?.ToLower().Contains(searchText) ?? false) ||
-                (c.ABN?.ToLower().Contains(searchText) ?? false)
-            ).ToList();
-
-            CustomersGrid.ItemsSource = filtered;
-        }
+        await LoadCustomersAsync();
     }
 
     private void NewCustomer_Click(object sender, RoutedEventArgs e)
@@ -90,30 +101,50 @@ public partial class CustomersPage : Page
     {
         if (sender is Button button && button.Tag is Customer customer)
         {
-            var result = MessageBox.Show(
-                $"Are you sure you want to delete '{customer.Name}'?\n\nThis action cannot be undone.",
-                "Confirm Delete",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
-
-            if (result == MessageBoxResult.Yes)
+            try
             {
-                try
+                // Check if customer has invoices
+                var invoiceCount = await _customerService.GetInvoiceCountAsync(customer.Id);
+
+                if (invoiceCount > 0)
                 {
-                    using var context = new AuroraDbContext();
-                    context.Customers.Remove(customer);
-                    await context.SaveChangesAsync();
+                    MessageBox.Show(
+                        $"Cannot delete '{customer.Name}' because {invoiceCount} invoice(s) are associated with this customer.\n\n" +
+                        "Please delete or reassign the invoices first.",
+                        "Cannot Delete",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                    return;
+                }
+
+                var result = MessageBox.Show(
+                    $"Are you sure you want to delete '{customer.Name}'?\n\nThis action cannot be undone.",
+                    "Confirm Delete",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    await _customerService.DeleteCustomerAsync(customer.Id);
 
                     MessageBox.Show("Customer deleted successfully.", "Success",
                         MessageBoxButton.OK, MessageBoxImage.Information);
 
                     await LoadCustomersAsync();
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error deleting customer: {ex.Message}", "Error",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Service already checked for invoices, but catch just in case
+                await LoggingService.LogErrorAsync(ex, "CustomersPage.DeleteCustomer_Click");
+                MessageBox.Show(ex.Message, "Cannot Delete",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogErrorAsync(ex, "CustomersPage.DeleteCustomer_Click");
+                MessageBox.Show($"Error deleting customer: {ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

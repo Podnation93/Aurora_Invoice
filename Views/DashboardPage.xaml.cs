@@ -1,16 +1,20 @@
 using System.Windows;
 using System.Windows.Controls;
-using Microsoft.EntityFrameworkCore;
-using AuroraInvoice.Data;
 using AuroraInvoice.Models;
+using AuroraInvoice.Services;
+using AuroraInvoice.Services.Interfaces;
+using AuroraInvoice.Common;
 
 namespace AuroraInvoice.Views;
 
 public partial class DashboardPage : Page
 {
+    private readonly IDashboardService _dashboardService;
+
     public DashboardPage()
     {
         InitializeComponent();
+        _dashboardService = new DashboardService();
         Loaded += DashboardPage_Loaded;
     }
 
@@ -23,63 +27,23 @@ public partial class DashboardPage : Page
     {
         try
         {
-            using var context = new AuroraDbContext();
-
-            // Get current month date range
-            var now = DateTime.Now;
-            var firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
-            var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
-
-            // Calculate total income (from paid invoices this month)
-            var totalIncome = await context.Invoices
-                .Where(i => i.Status == InvoiceStatus.Paid &&
-                           i.InvoiceDate >= firstDayOfMonth &&
-                           i.InvoiceDate <= lastDayOfMonth)
-                .SumAsync(i => i.TotalAmount);
-
-            // Calculate total expenses this month
-            var totalExpenses = await context.Expenses
-                .Where(e => e.Date >= firstDayOfMonth &&
-                           e.Date <= lastDayOfMonth)
-                .SumAsync(e => e.Amount);
-
-            // Calculate net GST (collected - paid)
-            var gstCollected = await context.Invoices
-                .Where(i => i.Status == InvoiceStatus.Paid &&
-                           i.InvoiceDate >= firstDayOfMonth &&
-                           i.InvoiceDate <= lastDayOfMonth)
-                .SumAsync(i => i.GSTAmount);
-
-            var gstPaid = await context.Expenses
-                .Where(e => e.Date >= firstDayOfMonth &&
-                           e.Date <= lastDayOfMonth)
-                .SumAsync(e => e.GSTAmount);
-
-            var netGst = gstCollected - gstPaid;
-
-            // Count pending invoices
-            var pendingInvoices = await context.Invoices
-                .CountAsync(i => i.Status == InvoiceStatus.Sent || i.Status == InvoiceStatus.Overdue);
-
-            // Load recent invoices
-            var recentInvoices = await context.Invoices
-                .Include(i => i.Customer)
-                .OrderByDescending(i => i.InvoiceDate)
-                .Take(10)
-                .ToListAsync();
+            // Load metrics using optimized service (2 queries instead of 5)
+            var metrics = await _dashboardService.GetMonthlyMetricsAsync();
+            var recentInvoices = await _dashboardService.GetRecentInvoicesAsync(AppConstants.DashboardRecentInvoicesCount);
 
             // Update UI
-            TotalIncomeText.Text = totalIncome.ToString("C");
-            TotalExpensesText.Text = totalExpenses.ToString("C");
-            NetGstText.Text = netGst.ToString("C");
-            PendingInvoicesText.Text = pendingInvoices.ToString();
+            TotalIncomeText.Text = metrics.TotalIncome.ToString("C");
+            TotalExpensesText.Text = metrics.TotalExpenses.ToString("C");
+            NetGstText.Text = metrics.NetGst.ToString("C");
+            PendingInvoicesText.Text = metrics.PendingInvoices.ToString();
             RecentInvoicesGrid.ItemsSource = recentInvoices;
 
             // Update subtitle based on net GST
-            GstSubtitleText.Text = netGst >= 0 ? "Payable to ATO" : "Refund from ATO";
+            GstSubtitleText.Text = metrics.NetGst >= 0 ? "Payable to ATO" : "Refund from ATO";
         }
         catch (Exception ex)
         {
+            await LoggingService.LogErrorAsync(ex, "DashboardPage.LoadDashboardDataAsync");
             MessageBox.Show($"Error loading dashboard data: {ex.Message}", "Error",
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }

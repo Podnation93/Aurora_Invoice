@@ -1,7 +1,9 @@
 using System.Windows;
+using AuroraInvoice.Common;
 using AuroraInvoice.Data;
 using AuroraInvoice.Models;
 using AuroraInvoice.Services;
+using AuroraInvoice.Services.Interfaces;
 
 namespace AuroraInvoice.Views;
 
@@ -11,19 +13,21 @@ public partial class ExpenseDialog : Window
     private bool _isEditMode;
     private List<ExpenseCategory> _categories;
     private readonly GstCalculationService _gstService;
+    private readonly ISettingsService _settingsService;
 
     public ExpenseDialog(List<ExpenseCategory> categories)
     {
         InitializeComponent();
         _categories = categories;
-        _gstService = new GstCalculationService();
+        _settingsService = new SettingsService();
+        _gstService = new GstCalculationService(_settingsService);
         _isEditMode = false;
         HeaderText.Text = "New Expense";
         CategoryComboBox.ItemsSource = _categories;
         if (_categories.Count > 0)
             CategoryComboBox.SelectedIndex = 0;
 
-        DatePicker.SelectedDate = DateTime.Now;
+        DatePicker.SelectedDate = DateTimeProvider.UtcNow.Date;
     }
 
     public ExpenseDialog(Expense expense, List<ExpenseCategory> categories)
@@ -31,7 +35,8 @@ public partial class ExpenseDialog : Window
         InitializeComponent();
         _expense = expense;
         _categories = categories;
-        _gstService = new GstCalculationService();
+        _settingsService = new SettingsService();
+        _gstService = new GstCalculationService(_settingsService);
         _isEditMode = true;
         HeaderText.Text = "Edit Expense";
 
@@ -48,16 +53,18 @@ public partial class ExpenseDialog : Window
             CategoryComboBox.SelectedItem = category;
     }
 
-    private void AmountTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+    private async void AmountTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
     {
         if (decimal.TryParse(AmountTextBox.Text, out decimal amount))
         {
-            var gstAmount = _gstService.CalculateGstFromTotal(amount, 0.10m);
-            GSTInfoText.Text = $"GST: {gstAmount:C} (10%)";
+            var gstRate = await _settingsService.GetGstRateAsync();
+            var gstAmount = _gstService.CalculateGstFromTotal(amount, gstRate);
+            GSTInfoText.Text = $"GST: {gstAmount:C} ({gstRate:P0})";
         }
         else
         {
-            GSTInfoText.Text = "GST: $0.00 (10%)";
+            var gstRate = await _settingsService.GetGstRateAsync();
+            GSTInfoText.Text = $"GST: $0.00 ({gstRate:P0})";
         }
     }
 
@@ -105,7 +112,8 @@ public partial class ExpenseDialog : Window
         {
             using var context = new AuroraDbContext();
             var selectedCategory = (ExpenseCategory)CategoryComboBox.SelectedItem;
-            var gstAmount = _gstService.CalculateGstFromTotal(amount, 0.10m);
+            var gstRate = await _settingsService.GetGstRateAsync();
+            var gstAmount = _gstService.CalculateGstFromTotal(amount, gstRate);
 
             if (_isEditMode && _expense != null)
             {
@@ -119,7 +127,7 @@ public partial class ExpenseDialog : Window
                     expenseToUpdate.GSTAmount = gstAmount;
                     expenseToUpdate.CategoryId = selectedCategory.Id;
                     expenseToUpdate.Notes = NotesTextBox.Text.Trim();
-                    expenseToUpdate.ModifiedDate = DateTime.Now;
+                    expenseToUpdate.ModifiedDate = DateTimeProvider.UtcNow;
                 }
             }
             else
@@ -133,7 +141,7 @@ public partial class ExpenseDialog : Window
                     GSTAmount = gstAmount,
                     CategoryId = selectedCategory.Id,
                     Notes = NotesTextBox.Text.Trim(),
-                    CreatedDate = DateTime.Now
+                    CreatedDate = DateTimeProvider.UtcNow
                 };
 
                 context.Expenses.Add(newExpense);
@@ -145,6 +153,7 @@ public partial class ExpenseDialog : Window
         }
         catch (Exception ex)
         {
+            await LoggingService.LogErrorAsync(ex, "ExpenseDialog.Save_Click");
             MessageBox.Show($"Error saving expense: {ex.Message}", "Error",
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }

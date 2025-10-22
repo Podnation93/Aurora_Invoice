@@ -210,3 +210,11 @@ e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\Views\ErrorLogsPage.baml
 e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\Views\ErrorLogsPage.g.cs
 e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\Controls\SimpleBarChart.baml
 e:\Programming\Aurora_Invoice\obj\Debug\net9.0-windows\Controls\SimpleBarChart.g.cs
+E:\Programming\Aurora_Invoice\bin\Debug\net9.0-windows\appsettings.json
+E:\Programming\Aurora_Invoice\bin\Debug\net9.0-windows\Microsoft.Extensions.Configuration.dll
+E:\Programming\Aurora_Invoice\bin\Debug\net9.0-windows\Microsoft.Extensions.Configuration.Binder.dll
+E:\Programming\Aurora_Invoice\bin\Debug\net9.0-windows\Microsoft.Extensions.Configuration.FileExtensions.dll
+E:\Programming\Aurora_Invoice\bin\Debug\net9.0-windows\Microsoft.Extensions.Configuration.Json.dll
+E:\Programming\Aurora_Invoice\bin\Debug\net9.0-windows\Microsoft.Extensions.FileProviders.Abstractions.dll
+E:\Programming\Aurora_Invoice\bin\Debug\net9.0-windows\Microsoft.Extensions.FileProviders.Physical.dll
+E:\Programming\Aurora_Invoice\bin\Debug\net9.0-windows\Microsoft.Extensions.FileSystemGlobbing.dll

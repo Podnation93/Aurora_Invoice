@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using AuroraInvoice.Data;
 using AuroraInvoice.Models;
 using AuroraInvoice.Services;
+using AuroraInvoice.Services.Interfaces;
+using AuroraInvoice.Common;
 
 namespace AuroraInvoice.Views;
 
@@ -15,12 +17,14 @@ public partial class InvoiceDialog : Window
     private List<Customer> _customers;
     private ObservableCollection<InvoiceItem> _items = new();
     private readonly GstCalculationService _gstService;
+    private readonly ISettingsService _settingsService;
 
     public InvoiceDialog(List<Customer> customers)
     {
         InitializeComponent();
         _customers = customers;
-        _gstService = new GstCalculationService();
+        _settingsService = new SettingsService();
+        _gstService = new GstCalculationService(_settingsService);
         _isEditMode = false;
         HeaderText.Text = "New Invoice";
 
@@ -30,8 +34,8 @@ public partial class InvoiceDialog : Window
 
         ItemsGrid.ItemsSource = _items;
 
-        InvoiceDatePicker.SelectedDate = DateTime.Now;
-        DueDatePicker.SelectedDate = DateTime.Now.AddDays(30);
+        InvoiceDatePicker.SelectedDate = DateTimeProvider.ToLocalTime(DateTimeProvider.UtcNow);
+        DueDatePicker.SelectedDate = DateTimeProvider.ToLocalTime(DateTimeProvider.UtcNow.AddDays(AppConstants.DefaultPaymentTermsDays));
         GenerateInvoiceNumber();
     }
 
@@ -40,7 +44,8 @@ public partial class InvoiceDialog : Window
         InitializeComponent();
         _invoice = invoice;
         _customers = customers;
-        _gstService = new GstCalculationService();
+        _settingsService = new SettingsService();
+        _gstService = new GstCalculationService(_settingsService);
         _isEditMode = true;
         HeaderText.Text = "Edit Invoice";
 
@@ -80,8 +85,8 @@ public partial class InvoiceDialog : Window
 
         CustomerComboBox.SelectedItem = _customers.FirstOrDefault(c => c.Id == fullInvoice.CustomerId);
         InvoiceNumberTextBox.Text = fullInvoice.InvoiceNumber;
-        InvoiceDatePicker.SelectedDate = fullInvoice.InvoiceDate;
-        DueDatePicker.SelectedDate = fullInvoice.DueDate;
+        InvoiceDatePicker.SelectedDate = DateTimeProvider.ToLocalTime(fullInvoice.InvoiceDate);
+        DueDatePicker.SelectedDate = DateTimeProvider.ToLocalTime(fullInvoice.DueDate);
         StatusComboBox.SelectedIndex = (int)fullInvoice.Status;
         NotesTextBox.Text = fullInvoice.Notes;
 
@@ -161,124 +166,163 @@ public partial class InvoiceDialog : Window
         TotalText.Text = total.ToString("C");
     }
 
-    private async void Save_Click(object sender, RoutedEventArgs e)
+    /// <summary>
+    /// Validates the invoice before saving
+    /// </summary>
+    private async Task<(bool IsValid, string Error)> ValidateInvoiceAsync()
     {
+        // Basic field validation
         if (CustomerComboBox.SelectedItem == null)
-        {
-            MessageBox.Show("Please select a customer.", "Validation",
-                MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
+            return (false, "Please select a customer.");
 
         if (string.IsNullOrWhiteSpace(InvoiceNumberTextBox.Text))
-        {
-            MessageBox.Show("Please enter an invoice number.", "Validation",
-                MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
+            return (false, "Please enter an invoice number.");
 
         if (_items.Count == 0)
-        {
-            MessageBox.Show("Please add at least one item to the invoice.", "Validation",
-                MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
+            return (false, "Please add at least one item to the invoice.");
 
         if (!InvoiceDatePicker.SelectedDate.HasValue)
-        {
-            MessageBox.Show("Please select an invoice date.", "Validation",
-                MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
+            return (false, "Please select an invoice date.");
 
         if (!DueDatePicker.SelectedDate.HasValue)
+            return (false, "Please select a due date.");
+
+        // Business rule validations
+        if (DueDatePicker.SelectedDate < InvoiceDatePicker.SelectedDate)
+            return (false, "Due date cannot be before invoice date.");
+
+        if (_items.Any(i => i.Quantity <= 0))
+            return (false, "All item quantities must be greater than zero.");
+
+        if (_items.Any(i => i.UnitPrice < 0))
+            return (false, "Unit prices cannot be negative.");
+
+        // Check for duplicate invoice number (only when creating new)
+        if (!_isEditMode)
         {
-            MessageBox.Show("Please select a due date.", "Validation",
-                MessageBoxButton.OK, MessageBoxImage.Warning);
+            using var context = new AuroraDbContext();
+            var exists = await context.Invoices
+                .AnyAsync(i => i.InvoiceNumber == InvoiceNumberTextBox.Text.Trim());
+            if (exists)
+                return (false, $"Invoice number '{InvoiceNumberTextBox.Text.Trim()}' already exists. Please use a different number.");
+        }
+
+        return (true, string.Empty);
+    }
+
+    private async void Save_Click(object sender, RoutedEventArgs e)
+    {
+        // Validate first
+        var (isValid, error) = await ValidateInvoiceAsync();
+        if (!isValid)
+        {
+            MessageBox.Show(error, "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
         try
         {
             using var context = new AuroraDbContext();
-            var selectedCustomer = (Customer)CustomerComboBox.SelectedItem;
+            using var transaction = await context.Database.BeginTransactionAsync();
 
-            var subtotal = _items.Sum(i => i.LineTotal);
-            var gstTotal = _items.Sum(i => i.GSTAmount);
-            var total = subtotal + gstTotal;
-
-            if (_isEditMode && _invoice != null)
+            try
             {
-                var invoiceToUpdate = await context.Invoices
-                    .Include(i => i.InvoiceItems)
-                    .FirstOrDefaultAsync(i => i.Id == _invoice.Id);
+                var selectedCustomer = (Customer)CustomerComboBox.SelectedItem;
 
-                if (invoiceToUpdate != null)
+                var subtotal = _items.Sum(i => i.LineTotal);
+                var gstTotal = _items.Sum(i => i.GSTAmount);
+                var total = subtotal + gstTotal;
+
+                // Convert local DateTime to UTC for storage
+                var invoiceDate = DateTimeProvider.ToUtcTime(InvoiceDatePicker.SelectedDate!.Value);
+                var dueDate = DateTimeProvider.ToUtcTime(DueDatePicker.SelectedDate!.Value);
+
+                if (_isEditMode && _invoice != null)
                 {
-                    invoiceToUpdate.CustomerId = selectedCustomer.Id;
-                    invoiceToUpdate.InvoiceNumber = InvoiceNumberTextBox.Text.Trim();
-                    invoiceToUpdate.InvoiceDate = InvoiceDatePicker.SelectedDate.Value;
-                    invoiceToUpdate.DueDate = DueDatePicker.SelectedDate.Value;
-                    invoiceToUpdate.Status = (InvoiceStatus)StatusComboBox.SelectedIndex;
-                    invoiceToUpdate.SubTotal = subtotal;
-                    invoiceToUpdate.GSTAmount = gstTotal;
-                    invoiceToUpdate.TotalAmount = total;
-                    invoiceToUpdate.Notes = NotesTextBox.Text.Trim();
-                    invoiceToUpdate.ModifiedDate = DateTime.Now;
+                    var invoiceToUpdate = await context.Invoices
+                        .Include(i => i.InvoiceItems)
+                        .FirstOrDefaultAsync(i => i.Id == _invoice.Id);
 
-                    context.InvoiceItems.RemoveRange(invoiceToUpdate.InvoiceItems);
+                    if (invoiceToUpdate != null)
+                    {
+                        invoiceToUpdate.CustomerId = selectedCustomer.Id;
+                        invoiceToUpdate.InvoiceNumber = InvoiceNumberTextBox.Text.Trim();
+                        invoiceToUpdate.InvoiceDate = invoiceDate;
+                        invoiceToUpdate.DueDate = dueDate;
+                        invoiceToUpdate.Status = (InvoiceStatus)StatusComboBox.SelectedIndex;
+                        invoiceToUpdate.SubTotal = subtotal;
+                        invoiceToUpdate.GSTAmount = gstTotal;
+                        invoiceToUpdate.TotalAmount = total;
+                        invoiceToUpdate.Notes = NotesTextBox.Text.Trim();
+                        invoiceToUpdate.ModifiedDate = DateTimeProvider.UtcNow;
+
+                        // Remove old items and add new ones
+                        context.InvoiceItems.RemoveRange(invoiceToUpdate.InvoiceItems);
+
+                        foreach (var item in _items)
+                        {
+                            invoiceToUpdate.InvoiceItems.Add(new InvoiceItem
+                            {
+                                Description = item.Description,
+                                ServiceDate = item.ServiceDate,
+                                Quantity = item.Quantity,
+                                UnitPrice = item.UnitPrice,
+                                GSTRate = item.GSTRate,
+                                LineTotal = item.LineTotal,
+                                GSTAmount = item.GSTAmount
+                            });
+                        }
+                    }
+                }
+                else
+                {
+                    var newInvoice = new Invoice
+                    {
+                        CustomerId = selectedCustomer.Id,
+                        InvoiceNumber = InvoiceNumberTextBox.Text.Trim(),
+                        InvoiceDate = invoiceDate,
+                        DueDate = dueDate,
+                        Status = (InvoiceStatus)StatusComboBox.SelectedIndex,
+                        SubTotal = subtotal,
+                        GSTAmount = gstTotal,
+                        TotalAmount = total,
+                        Notes = NotesTextBox.Text.Trim(),
+                        CreatedDate = DateTimeProvider.UtcNow
+                    };
 
                     foreach (var item in _items)
                     {
-                        invoiceToUpdate.InvoiceItems.Add(new InvoiceItem
-                        {
-                            Description = item.Description,
-                            Quantity = item.Quantity,
-                            UnitPrice = item.UnitPrice,
-                            GSTRate = item.GSTRate,
-                            LineTotal = item.LineTotal,
-                            GSTAmount = item.GSTAmount
-                        });
+                        newInvoice.InvoiceItems.Add(item);
+                    }
+
+                    context.Invoices.Add(newInvoice);
+
+                    // Update next invoice number
+                    var settings = await context.AppSettings.FirstOrDefaultAsync();
+                    if (settings != null)
+                    {
+                        settings.NextInvoiceNumber++;
+                        settings.ModifiedDate = DateTimeProvider.UtcNow;
                     }
                 }
+
+                // Commit all changes atomically
+                await context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                DialogResult = true;
+                Close();
             }
-            else
+            catch (Exception)
             {
-                var newInvoice = new Invoice
-                {
-                    CustomerId = selectedCustomer.Id,
-                    InvoiceNumber = InvoiceNumberTextBox.Text.Trim(),
-                    InvoiceDate = InvoiceDatePicker.SelectedDate.Value,
-                    DueDate = DueDatePicker.SelectedDate.Value,
-                    Status = (InvoiceStatus)StatusComboBox.SelectedIndex,
-                    SubTotal = subtotal,
-                    GSTAmount = gstTotal,
-                    TotalAmount = total,
-                    Notes = NotesTextBox.Text.Trim(),
-                    CreatedDate = DateTime.Now
-                };
-
-                foreach (var item in _items)
-                {
-                    newInvoice.InvoiceItems.Add(item);
-                }
-
-                context.Invoices.Add(newInvoice);
-
-                // Update next invoice number
-                var settings = await context.AppSettings.FirstOrDefaultAsync();
-                if (settings != null)
-                {
-                    settings.NextInvoiceNumber++;
-                }
+                // Rollback transaction on any error
+                await transaction.RollbackAsync();
+                throw;
             }
-
-            await context.SaveChangesAsync();
-            DialogResult = true;
-            Close();
         }
         catch (Exception ex)
         {
+            await LoggingService.LogErrorAsync(ex, "InvoiceDialog.Save_Click");
             MessageBox.Show($"Error saving invoice: {ex.Message}", "Error",
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
