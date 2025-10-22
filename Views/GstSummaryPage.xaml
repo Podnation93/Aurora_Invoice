@@ -1,0 +1,61 @@
+<Page x:Class="AuroraInvoice.Views.GstSummaryPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:converters="clr-namespace:AuroraInvoice.Converters"
+      mc:Ignorable="d" 
+      d:DesignHeight="800" d:DesignWidth="1000"
+      Title="GST Summary Report">
+
+    <Page.Resources>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    </Page.Resources>
+
+    <Grid Margin="40,30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,30">
+            <TextBlock Text="GST Summary Report"
+                      Style="{StaticResource HeaderText}"/>
+            <TextBlock Text="View GST collected and paid for a selected period"
+                      Style="{StaticResource SecondaryText}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,20">
+            <DatePicker SelectedDate="{Binding StartDate}" Margin="0,0,10,0"/>
+            <DatePicker SelectedDate="{Binding EndDate}" Margin="0,0,20,0"/>
+            <Button Content="Generate Report" Command="{Binding GenerateReportCommand}" Style="{StaticResource ModernButton}"/>
+        </StackPanel>
+
+        <Border Grid.Row="2" Style="{StaticResource Card}" Visibility="{Binding Summary, Converter={StaticResource NullToVisibilityConverter}}">
+            <StackPanel>
+                <TextBlock Text="GST Summary" Style="{StaticResource SubheaderText}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="GST Collected:" FontWeight="SemiBold" Margin="0,0,10,10"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Summary.GstCollected, StringFormat=C}" Foreground="{StaticResource SuccessBrush}"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="GST Paid:" FontWeight="SemiBold" Margin="0,0,10,10"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Summary.GstPaid, StringFormat=C}" Foreground="{StaticResource DangerBrush}"/>
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Net GST:" FontWeight="Bold" FontSize="16" Margin="0,10,10,0"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Summary.NetGst, StringFormat=C}" FontWeight="Bold" FontSize="16" Foreground="{StaticResource PrimaryBrush}"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Page>

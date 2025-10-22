@@ -1,0 +1,57 @@
+<Page x:Class="AuroraInvoice.Views.InvoiceActivityReportPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:converters="clr-namespace:AuroraInvoice.Converters"
+      mc:Ignorable="d" 
+      d:DesignHeight="800" d:DesignWidth="1000"
+      Title="Invoice Activity Report">
+
+    <Page.Resources>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    </Page.Resources>
+
+    <Grid Margin="40,30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,30">
+            <TextBlock Text="Invoice Activity Report"
+                      Style="{StaticResource HeaderText}"/>
+            <TextBlock Text="View invoice activity for a selected period"
+                      Style="{StaticResource SecondaryText}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,20">
+            <DatePicker SelectedDate="{Binding StartDate}" Margin="0,0,10,0"/>
+            <DatePicker SelectedDate="{Binding EndDate}" Margin="0,0,20,0"/>
+            <Button Content="Generate Report" Command="{Binding GenerateReportCommand}" Style="{StaticResource ModernButton}"/>
+        </StackPanel>
+
+        <Border Grid.Row="2" Style="{StaticResource Card}" Visibility="{Binding Report, Converter={StaticResource NullToVisibilityConverter}}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="{Binding Report.StartDate, StringFormat='Activity from {0:dd/MM/yyyy}}'" Style="{StaticResource SubheaderText}"/>
+
+                <DataGrid Grid.Row="1" ItemsSource="{Binding Report.Activities}" Style="{StaticResource ModernDataGrid}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Invoice #" Binding="{Binding InvoiceNumber}" Width="Auto"/>
+                        <DataGridTextColumn Header="Customer" Binding="{Binding CustomerName}" Width="*"/>
+                        <DataGridTextColumn Header="Date" Binding="{Binding InvoiceDate, StringFormat=dd/MM/yyyy}" Width="Auto"/>
+                        <DataGridTextColumn Header="Due Date" Binding="{Binding DueDate, StringFormat=dd/MM/yyyy}" Width="Auto"/>
+                        <DataGridTextColumn Header="Amount" Binding="{Binding Amount, StringFormat=C}" Width="Auto"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="Auto"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

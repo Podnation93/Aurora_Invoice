@@ -11,6 +11,7 @@ namespace AuroraInvoice.ViewModels;
 public partial class CustomersViewModel : ObservableObject
 {
     private readonly ICustomerService _customerService;
+    private readonly IDialogService _dialogService;
 
     [ObservableProperty]
     private ObservableCollection<Customer> _customers = new();
@@ -22,9 +23,10 @@ public partial class CustomersViewModel : ObservableObject
     public ICommand<Customer> EditCustomerCommand { get; }
     public ICommand<Customer> DeleteCustomerCommand { get; }
 
-    public CustomersViewModel(ICustomerService customerService)
+    public CustomersViewModel(ICustomerService customerService, IDialogService dialogService)
     {
         _customerService = customerService;
+        _dialogService = dialogService;
         NewCustomerCommand = new AsyncRelayCommand(CreateNewCustomer);
         EditCustomerCommand = new AsyncRelayCommand<Customer>(EditCustomer);
         DeleteCustomerCommand = new AsyncRelayCommand<Customer>(DeleteCustomer);
@@ -39,20 +41,23 @@ public partial class CustomersViewModel : ObservableObject
     }
 
     private async Task CreateNewCustomer()
-    {
-        // This will require a dialog service or other mechanism to show the dialog
-        // For now, we will just reload the customers
-        await LoadCustomers();
+    {        
+        var result = _dialogService.ShowCustomerDialog();
+        if (result == true)
+        {
+            await LoadCustomers();
+        }
     }
 
     private async Task EditCustomer(Customer? customer)
-    {
+    {        
         if (customer == null) return;
-        // This will require a dialog service or other mechanism to show the dialog
-        // For now, we will just reload the customers
-        await LoadCustomers();
+        var result = _dialogService.ShowCustomerDialog(customer);
+        if (result == true)
+        {
+            await LoadCustomers();
+        }
     }
-
     private async Task DeleteCustomer(Customer? customer)
     {        
         if (customer == null) return;

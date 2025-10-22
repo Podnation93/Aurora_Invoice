@@ -1,0 +1,71 @@
+<Page x:Class="AuroraInvoice.Views.YearlyFinancialReportPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:converters="clr-namespace:AuroraInvoice.Converters"
+      mc:Ignorable="d" 
+      d:DesignHeight="800" d:DesignWidth="1000"
+      Title="Yearly Financial Report">
+
+    <Page.Resources>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    </Page.Resources>
+
+    <Grid Margin="40,30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,30">
+            <TextBlock Text="Yearly Financial Report"
+                      Style="{StaticResource HeaderText}"/>
+            <TextBlock Text="View a summary of your finances for a selected year"
+                      Style="{StaticResource SecondaryText}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,20">
+            <ComboBox ItemsSource="{Binding Years}" SelectedItem="{Binding SelectedYear}" Margin="0,0,20,0" Style="{StaticResource ModernComboBox}"/>
+            <Button Content="Generate Report" Command="{Binding GenerateReportCommand}" Style="{StaticResource ModernButton}"/>
+        </StackPanel>
+
+        <Border Grid.Row="2" Style="{StaticResource Card}" Visibility="{Binding Summary, Converter={StaticResource NullToVisibilityConverter}}">
+            <StackPanel>
+                <TextBlock Text="{Binding Summary.Year, StringFormat='Financial Summary for {0}'}" Style="{StaticResource SubheaderText}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Total Income:" FontWeight="SemiBold" Margin="0,0,10,10"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Summary.TotalIncome, StringFormat=C}" Foreground="{StaticResource SuccessBrush}"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Total Expenses:" FontWeight="SemiBold" Margin="0,0,10,10"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Summary.TotalExpenses, StringFormat=C}" Foreground="{StaticResource DangerBrush}"/>
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Net Profit:" FontWeight="Bold" FontSize="16" Margin="0,10,10,10"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Summary.NetProfit, StringFormat=C}" FontWeight="Bold" FontSize="16" Foreground="{StaticResource PrimaryBrush}"/>
+
+                    <Separator Grid.Row="3" Grid.ColumnSpan="2" Margin="0,10,0,10"/>
+
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Total GST Collected:" FontWeight="SemiBold" Margin="0,0,10,10"/>
+                    <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding Summary.TotalGstCollected, StringFormat=C}" Foreground="{StaticResource SuccessBrush}"/>
+
+                    <TextBlock Grid.Row="5" Grid.Column="0" Text="Total GST Paid:" FontWeight="SemiBold" Margin="0,0,10,10"/>
+                    <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding Summary.TotalGstPaid, StringFormat=C}" Foreground="{StaticResource DangerBrush}"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Page>

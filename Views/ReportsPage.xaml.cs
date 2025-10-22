@@ -5,15 +5,38 @@ namespace AuroraInvoice.Views;
 
 public partial class ReportsPage : Page
 {
-    public ReportsPage()
+    private readonly GstSummaryPage _gstSummaryPage;
+    private readonly YearlyFinancialReportPage _yearlyFinancialReportPage;
+    private readonly InvoiceActivityReportPage _invoiceActivityReportPage;
+    private readonly ExpenseReportPage _expenseReportPage;
+
+    public ReportsPage(GstSummaryPage gstSummaryPage, YearlyFinancialReportPage yearlyFinancialReportPage, InvoiceActivityReportPage invoiceActivityReportPage, ExpenseReportPage expenseReportPage)
     {
         InitializeComponent();
+        _gstSummaryPage = gstSummaryPage;
+        _yearlyFinancialReportPage = yearlyFinancialReportPage;
+        _invoiceActivityReportPage = invoiceActivityReportPage;
+        _expenseReportPage = expenseReportPage;
     }
 
     private void GenerateGSTReport_Click(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show("GST report generation coming soon!\n\nThis will show:\n- GST collected from invoices\n- GST paid on expenses\n- Net GST position", "Feature Coming Soon",
-            MessageBoxButton.OK, MessageBoxImage.Information);
+        NavigationService?.Navigate(_gstSummaryPage);
+    }
+
+    private void GenerateYearlyReport_Click(object sender, RoutedEventArgs e)
+    {
+        NavigationService?.Navigate(_yearlyFinancialReportPage);
+    }
+
+    private void GenerateInvoiceReport_Click(object sender, RoutedEventArgs e)
+    {
+        NavigationService?.Navigate(_invoiceActivityReportPage);
+    }
+
+    private void GenerateExpenseReport_Click(object sender, RoutedEventArgs e)
+    {
+        NavigationService?.Navigate(_expenseReportPage);
     }
 
     private void GenerateYearlyReport_Click(object sender, RoutedEventArgs e)

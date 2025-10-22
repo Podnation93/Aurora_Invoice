@@ -1,0 +1,56 @@
+<Page x:Class="AuroraInvoice.Views.ExpenseReportPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:converters="clr-namespace:AuroraInvoice.Converters"
+      mc:Ignorable="d" 
+      d:DesignHeight="800" d:DesignWidth="1000"
+      Title="Expense Report">
+
+    <Page.Resources>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    </Page.Resources>
+
+    <Grid Margin="40,30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,30">
+            <TextBlock Text="Expense Report"
+                      Style="{StaticResource HeaderText}"/>
+            <TextBlock Text="View expense activity for a selected period"
+                      Style="{StaticResource SecondaryText}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,20">
+            <DatePicker SelectedDate="{Binding StartDate}" Margin="0,0,10,0"/>
+            <DatePicker SelectedDate="{Binding EndDate}" Margin="0,0,20,0"/>
+            <Button Content="Generate Report" Command="{Binding GenerateReportCommand}" Style="{StaticResource ModernButton}"/>
+        </StackPanel>
+
+        <Border Grid.Row="2" Style="{StaticResource Card}" Visibility="{Binding Report, Converter={StaticResource NullToVisibilityConverter}}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="{Binding Report.StartDate, StringFormat='Expenses from {0:dd/MM/yyyy}}'" Style="{StaticResource SubheaderText}"/>
+
+                <DataGrid Grid.Row="1" ItemsSource="{Binding Report.Expenses}" Style="{StaticResource ModernDataGrid}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=dd/MM/yyyy}" Width="Auto"/>
+                        <DataGridTextColumn Header="Vendor" Binding="{Binding Vendor}" Width="*"/>
+                        <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="2*"/>
+                        <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="Auto"/>
+                        <DataGridTextColumn Header="Amount" Binding="{Binding Amount, StringFormat=C}" Width="Auto"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

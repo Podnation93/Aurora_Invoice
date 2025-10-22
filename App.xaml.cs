@@ -77,6 +77,20 @@
         services.AddTransient<SettingsViewModel>();
         services.AddTransient<BackupViewModel>();
         services.AddTransient<ErrorLogsViewModel>();
+
+        // Reporting
+        services.AddTransient<IReportService, ReportService>();
+        services.AddTransient<GstSummaryViewModel>();
+        services.AddTransient<GstSummaryPage>();
+        services.AddTransient<YearlyFinancialReportViewModel>();
+        services.AddTransient<YearlyFinancialReportPage>();
+        services.AddTransient<InvoiceActivityReportViewModel>();
+        services.AddTransient<InvoiceActivityReportPage>();
+        services.AddTransient<ExpenseReportViewModel>();
+        services.AddTransient<ExpenseReportPage>();
+
+        // Dialogs
+        services.AddSingleton<IDialogService, DialogService>();
 ﻿    }
 ﻿
 ﻿    protected override void OnExit(ExitEventArgs e)

@@ -14,6 +14,7 @@ namespace AuroraInvoice.ViewModels;
 public partial class ExpensesViewModel : ObservableObject
 {
     private readonly IDbContextFactory<AuroraDbContext> _contextFactory;
+    private readonly IDialogService _dialogService;
 
     [ObservableProperty]
     private ObservableCollection<Expense> _expenses = new();
@@ -40,9 +41,10 @@ public partial class ExpensesViewModel : ObservableObject
     public ICommand<Expense> EditExpenseCommand { get; }
     public ICommand<Expense> DeleteExpenseCommand { get; }
 
-    public ExpensesViewModel(IDbContextFactory<AuroraDbContext> contextFactory)
+    public ExpensesViewModel(IDbContextFactory<AuroraDbContext> contextFactory, IDialogService dialogService)
     {
         _contextFactory = contextFactory;
+        _dialogService = dialogService;
 
         NewExpenseCommand = new AsyncRelayCommand(CreateNewExpense);
         EditExpenseCommand = new AsyncRelayCommand<Expense>(EditExpense);
@@ -92,15 +94,21 @@ public partial class ExpensesViewModel : ObservableObject
 
     private async Task CreateNewExpense()
     {
-        // Requires dialog service
-        await LoadData();
+        var result = _dialogService.ShowExpenseDialog();
+        if (result == true)
+        {
+            await LoadData();
+        }
     }
 
     private async Task EditExpense(Expense? expense)
     {
         if (expense == null) return;
-        // Requires dialog service
-        await LoadData();
+        var result = _dialogService.ShowExpenseDialog(expense);
+        if (result == true)
+        {
+            await LoadData();
+        }
     }
 
     private async Task DeleteExpense(Expense? expense)

@@ -12,6 +12,7 @@ public partial class InvoicesViewModel : ObservableObject
 {
     private readonly IInvoiceService _invoiceService;
     private readonly ICustomerService _customerService;
+    private readonly IDialogService _dialogService;
 
     [ObservableProperty]
     private ObservableCollection<Invoice> _invoices = new();
@@ -31,10 +32,11 @@ public partial class InvoicesViewModel : ObservableObject
     public ICommand<Invoice> PreviewInvoiceCommand { get; }
     public ICommand<Invoice> DownloadInvoiceCommand { get; }
 
-    public InvoicesViewModel(IInvoiceService invoiceService, ICustomerService customerService)
+    public InvoicesViewModel(IInvoiceService invoiceService, ICustomerService customerService, IDialogService dialogService)
     {
         _invoiceService = invoiceService;
         _customerService = customerService;
+        _dialogService = dialogService;
 
         NewInvoiceCommand = new AsyncRelayCommand(CreateNewInvoice);
         EditInvoiceCommand = new AsyncRelayCommand<Invoice>(EditInvoice);
@@ -55,15 +57,21 @@ public partial class InvoicesViewModel : ObservableObject
 
     private async Task CreateNewInvoice()
     {
-        // Requires dialog service
-        await LoadInvoices();
+        var result = _dialogService.ShowInvoiceDialog();
+        if (result == true)
+        {
+            await LoadInvoices();
+        }
     }
 
     private async Task EditInvoice(Invoice? invoice)
     {
         if (invoice == null) return;
-        // Requires dialog service
-        await LoadInvoices();
+        var result = _dialogService.ShowInvoiceDialog(invoice);
+        if (result == true)
+        {
+            await LoadInvoices();
+        }
     }
 
     private async Task DeleteInvoice(Invoice? invoice)
