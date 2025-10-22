@@ -30,8 +30,15 @@ public class InvoicePdfService
         if (settings == null)
             throw new Exception("Business settings not configured");
 
+        // Load template (use default if available)
+        var template = await context.InvoiceTemplates
+            .Where(t => t.IsDefault)
+            .FirstOrDefaultAsync();
+        if (template == null)
+            template = await context.InvoiceTemplates.FirstOrDefaultAsync();
+
         // Generate PDF
-        var document = CreateInvoiceDocument(fullInvoice, settings);
+        var document = CreateInvoiceDocument(fullInvoice, settings, template);
         document.GeneratePdf(outputPath);
 
         return outputPath;
@@ -56,12 +63,22 @@ public class InvoicePdfService
         if (settings == null)
             throw new Exception("Business settings not configured");
 
-        var document = CreateInvoiceDocument(fullInvoice, settings);
+        // Load template (use default if available)
+        var template = await context.InvoiceTemplates
+            .Where(t => t.IsDefault)
+            .FirstOrDefaultAsync();
+        if (template == null)
+            template = await context.InvoiceTemplates.FirstOrDefaultAsync();
+
+        var document = CreateInvoiceDocument(fullInvoice, settings, template);
         return document.GeneratePdf();
     }
 
-    private Document CreateInvoiceDocument(Invoice invoice, AppSettings settings)
+    private Document CreateInvoiceDocument(Invoice invoice, AppSettings settings, InvoiceTemplate? template)
     {
+        // Use default template if none provided
+        template ??= new InvoiceTemplate();
+
         return Document.Create(container =>
         {
             container.Page(page =>
@@ -70,14 +87,14 @@ public class InvoicePdfService
                 page.Margin(40);
                 page.DefaultTextStyle(x => x.FontSize(11).FontFamily("Arial"));
 
-                page.Header().Element(c => ComposeHeader(c, invoice, settings));
-                page.Content().Element(c => ComposeContent(c, invoice, settings));
-                page.Footer().Element(c => ComposeFooter(c, invoice, settings));
+                page.Header().Element(c => ComposeHeader(c, invoice, settings, template));
+                page.Content().Element(c => ComposeContent(c, invoice, settings, template));
+                page.Footer().Element(c => ComposeFooter(c, invoice, settings, template));
             });
         });
     }
 
-    private void ComposeHeader(IContainer container, Invoice invoice, AppSettings settings)
+    private void ComposeHeader(IContainer container, Invoice invoice, AppSettings settings, InvoiceTemplate template)
     {
         container.Row(row =>
         {
@@ -134,7 +151,7 @@ public class InvoicePdfService
         });
     }
 
-    private void ComposeContent(IContainer container, Invoice invoice, AppSettings settings)
+    private void ComposeContent(IContainer container, Invoice invoice, AppSettings settings, InvoiceTemplate template)
     {
         container.PaddingVertical(20).Column(column =>
         {
@@ -342,7 +359,7 @@ public class InvoicePdfService
         });
     }
 
-    private void ComposeFooter(IContainer container, Invoice invoice, AppSettings settings)
+    private void ComposeFooter(IContainer container, Invoice invoice, AppSettings settings, InvoiceTemplate template)
     {
         container.AlignCenter().Column(column =>
         {

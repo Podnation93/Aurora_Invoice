@@ -74,11 +74,13 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="10"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="140"/>
                         <ColumnDefinition Width="10"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="10"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Grid.Column="0">
@@ -91,6 +93,15 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="2">
+                        <TextBlock Text="Service Date"
+                                  FontWeight="SemiBold"
+                                  FontSize="12"
+                                  Margin="0,0,0,8"/>
+                        <DatePicker x:Name="ItemServiceDatePicker"
+                                   Style="{StaticResource ModernDatePicker}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="4">
                         <TextBlock Text="Quantity"
                                   FontWeight="SemiBold"
                                   FontSize="12"
@@ -100,7 +111,7 @@
                                 Text="1"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Column="4">
+                    <StackPanel Grid.Column="6">
                         <TextBlock Text="Unit Price"
                                   FontWeight="SemiBold"
                                   FontSize="12"
@@ -110,7 +121,7 @@
                                 TextChanged="CalculateTotals"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Column="6"
+                    <StackPanel Grid.Column="8"
                                VerticalAlignment="Bottom">
                         <Button Content="Add Item"
                                Style="{StaticResource ModernButton}"
@@ -125,6 +136,7 @@
                          Margin="0,16,0,16">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="2*"/>
+                        <DataGridTextColumn Header="Service Date" Binding="{Binding ServiceDate, StringFormat=dd/MM/yyyy}" Width="120"/>
                         <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" Width="*"/>
                         <DataGridTextColumn Header="Unit Price" Binding="{Binding UnitPrice, StringFormat=C}" Width="*"/>
                         <DataGridTextColumn Header="Total" Binding="{Binding LineTotal, StringFormat=C}" Width="*"/>

@@ -16,6 +16,7 @@ public class AuroraDbContext : DbContext
     public DbSet<ExpenseCategory> ExpenseCategories => Set<ExpenseCategory>();
     public DbSet<AppSettings> AppSettings => Set<AppSettings>();
     public DbSet<ErrorLog> ErrorLogs => Set<ErrorLog>();
+    public DbSet<InvoiceTemplate> InvoiceTemplates => Set<InvoiceTemplate>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -88,6 +89,61 @@ public class AuroraDbContext : DbContext
                 DefaultGSTRate = 0.10m,
                 ThemeColor = "#2563eb",
                 AccentColor = "#7c3aed",
+                CreatedDate = seedDate
+            }
+        );
+
+        // Seed default invoice template (simplified for NDIS/service providers)
+        modelBuilder.Entity<InvoiceTemplate>().HasData(
+            new InvoiceTemplate
+            {
+                Id = 1,
+                TemplateName = "NDIS Service Invoice",
+                IsDefault = true,
+
+                // Show essentials only
+                ShowBusinessAddress = true,
+                ShowBusinessPhone = true,
+                ShowBusinessEmail = true,
+                ShowABN = true,
+
+                ShowInvoiceNumber = true,
+                ShowInvoiceDate = true,
+                ShowDueDate = false, // Don't show due date
+
+                ShowCustomerName = true,
+                ShowCustomerAddress = true,
+                ShowCustomerContactPerson = false,
+                ShowCustomerPhone = false,
+                ShowCustomerEmail = false,
+
+                // Line items - show service date per item
+                ShowItemNumber = true,
+                ShowItemDescription = true,
+                ShowItemServiceDate = true, // Show service date on each line
+                ShowItemQuantity = true,
+                ShowItemUnitPrice = true,
+                ShowItemTotal = true,
+
+                // Simplified totals - just show final total
+                ShowSubtotal = false,
+                ShowGSTTotal = false,
+                ShowGrandTotal = true,
+
+                // Labels matching your example
+                ItemNumberLabel = "#",
+                ItemDescriptionLabel = "Item & Description",
+                ItemServiceDateLabel = "Service Date",
+                ItemQuantityLabel = "Hrs",
+                ItemUnitPriceLabel = "Rate",
+                ItemTotalLabel = "Amount",
+
+                ShowPaymentTerms = false,
+                ShowNotes = false,
+                ShowThankYouMessage = false,
+
+                HeaderColor = "#008080",
+                AccentColor = "#008080",
                 CreatedDate = seedDate
             }
         );

@@ -122,6 +122,7 @@ public partial class InvoiceDialog : Window
         var item = new InvoiceItem
         {
             Description = ItemDescriptionTextBox.Text.Trim(),
+            ServiceDate = ItemServiceDatePicker.SelectedDate,
             Quantity = quantity,
             UnitPrice = price,
             GSTRate = 0.10m,
@@ -132,6 +133,7 @@ public partial class InvoiceDialog : Window
         _items.Add(item);
 
         ItemDescriptionTextBox.Clear();
+        ItemServiceDatePicker.SelectedDate = null;
         ItemQuantityTextBox.Text = "1";
         ItemPriceTextBox.Clear();
         ItemDescriptionTextBox.Focus();
