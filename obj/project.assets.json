@@ -3676,6 +3676,7 @@
       "Microsoft.EntityFrameworkCore.Sqlite >= 9.0.10",
       "Microsoft.Extensions.Configuration.Binder >= 9.0.10",
       "Microsoft.Extensions.Configuration.Json >= 9.0.10",
+      "Microsoft.Extensions.DependencyInjection >= 9.0.10",
       "QuestPDF >= 2025.7.3"
     ]
   },
@@ -3741,6 +3742,10 @@
             "version": "[9.0.10, )"
           },
           "Microsoft.Extensions.Configuration.Json": {
+            "target": "Package",
+            "version": "[9.0.10, )"
+          },
+          "Microsoft.Extensions.DependencyInjection": {
             "target": "Package",
             "version": "[9.0.10, )"
           },

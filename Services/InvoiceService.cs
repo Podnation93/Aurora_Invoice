@@ -195,30 +195,8 @@ public class InvoiceService : IInvoiceService
     public async Task<string> GetNextInvoiceNumberAsync()
     {
         using var context = new AuroraDbContext();
-
-        var config = AppConfiguration.Instance;
-        var prefix = config.Business.InvoiceNumberPrefix;
-
-        // Get the last invoice number
-        var lastInvoice = await context.Invoices
-            .Where(i => i.InvoiceNumber.StartsWith(prefix))
-            .OrderByDescending(i => i.InvoiceNumber)
-            .FirstOrDefaultAsync();
-
-        if (lastInvoice == null)
-        {
-            return $"{prefix}-0001";
-        }
-
-        // Extract the number part
-        var lastNumber = lastInvoice.InvoiceNumber.Replace(prefix + "-", "");
-        if (int.TryParse(lastNumber, out int number))
-        {
-            return $"{prefix}-{(number + 1):D4}";
-        }
-
-        // Fallback
-        return $"{prefix}-0001";
+        var settings = await context.AppSettings.FirstAsync();
+        return $"{settings.InvoicePrefix}{settings.NextInvoiceNumber:D4}";
     }
 
     /// <inheritdoc/>

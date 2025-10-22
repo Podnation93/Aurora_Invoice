@@ -9,17 +9,19 @@ namespace AuroraInvoice.Views;
 
 public partial class ExpenseDialog : Window
 {
+    private readonly IDbContextFactory<AuroraDbContext> _contextFactory;
+    private readonly ISettingsService _settingsService;
     private Expense? _expense;
     private bool _isEditMode;
     private List<ExpenseCategory> _categories;
     private readonly GstCalculationService _gstService;
-    private readonly ISettingsService _settingsService;
 
-    public ExpenseDialog(List<ExpenseCategory> categories)
+    public ExpenseDialog(List<ExpenseCategory> categories, IDbContextFactory<AuroraDbContext> contextFactory, ISettingsService settingsService)
     {
         InitializeComponent();
         _categories = categories;
-        _settingsService = new SettingsService();
+        _contextFactory = contextFactory;
+        _settingsService = settingsService;
         _gstService = new GstCalculationService(_settingsService);
         _isEditMode = false;
         HeaderText.Text = "New Expense";
@@ -30,16 +32,16 @@ public partial class ExpenseDialog : Window
         DatePicker.SelectedDate = DateTimeProvider.UtcNow.Date;
     }
 
-    public ExpenseDialog(Expense expense, List<ExpenseCategory> categories)
+    public ExpenseDialog(Expense expense, List<ExpenseCategory> categories, IDbContextFactory<AuroraDbContext> contextFactory, ISettingsService settingsService)
     {
         InitializeComponent();
         _expense = expense;
         _categories = categories;
-        _settingsService = new SettingsService();
+        _contextFactory = contextFactory;
+        _settingsService = settingsService;
         _gstService = new GstCalculationService(_settingsService);
         _isEditMode = true;
         HeaderText.Text = "Edit Expense";
-
         CategoryComboBox.ItemsSource = _categories;
 
         DatePicker.SelectedDate = expense.Date;
@@ -110,7 +112,7 @@ public partial class ExpenseDialog : Window
 
         try
         {
-            using var context = new AuroraDbContext();
+            using var context = _contextFactory.CreateDbContext();
             var selectedCategory = (ExpenseCategory)CategoryComboBox.SelectedItem;
             var gstRate = await _settingsService.GetGstRateAsync();
             var gstAmount = _gstService.CalculateGstFromTotal(amount, gstRate);

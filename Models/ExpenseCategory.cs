@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using AuroraInvoice.Common;
 
 namespace AuroraInvoice.Models;
 
@@ -19,7 +20,7 @@ public class ExpenseCategory
 
     public bool IsActive { get; set; } = true;
 
-    public DateTime CreatedDate { get; set; } = DateTime.Now;
+    public DateTime CreatedDate { get; set; } = DateTimeProvider.UtcNow;
 
     // Navigation property
     public ICollection<Expense> Expenses { get; set; } = new List<Expense>();

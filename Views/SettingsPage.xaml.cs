@@ -3,16 +3,19 @@ using System.Windows.Controls;
 using Microsoft.EntityFrameworkCore;
 using AuroraInvoice.Data;
 using AuroraInvoice.Models;
+using AuroraInvoice.Common;
 
 namespace AuroraInvoice.Views;
 
 public partial class SettingsPage : Page
 {
+    private readonly IDbContextFactory<AuroraDbContext> _contextFactory;
     private AppSettings? _settings;
 
-    public SettingsPage()
+    public SettingsPage(IDbContextFactory<AuroraDbContext> contextFactory)
     {
         InitializeComponent();
+        _contextFactory = contextFactory;
         Loaded += SettingsPage_Loaded;
     }
 
@@ -25,7 +28,7 @@ public partial class SettingsPage : Page
     {
         try
         {
-            using var context = new AuroraDbContext();
+            using var context = _contextFactory.CreateDbContext();
             _settings = await context.AppSettings.FirstOrDefaultAsync();
 
             if (_settings != null)
@@ -51,28 +54,28 @@ public partial class SettingsPage : Page
     private async void SaveSettings_Click(object sender, RoutedEventArgs e)
     {
         if (string.IsNullOrWhiteSpace(BusinessNameTextBox.Text))
-        {
+        {            
             MessageBox.Show("Please enter a business name.", "Validation Error",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
         if (!int.TryParse(NextInvoiceNumberTextBox.Text, out int nextInvoiceNumber) || nextInvoiceNumber < 1)
-        {
+        {            
             MessageBox.Show("Please enter a valid next invoice number.", "Validation Error",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
         if (!int.TryParse(PaymentTermsTextBox.Text, out int paymentTerms) || paymentTerms < 0)
-        {
+        {            
             MessageBox.Show("Please enter valid payment terms.", "Validation Error",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
         if (!decimal.TryParse(DefaultGSTRateTextBox.Text, out decimal gstRatePercent) || gstRatePercent < 0 || gstRatePercent > 100)
-        {
+        {            
             MessageBox.Show("Please enter a valid GST rate between 0 and 100.", "Validation Error",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
@@ -80,7 +83,7 @@ public partial class SettingsPage : Page
 
         try
         {
-            using var context = new AuroraDbContext();
+            using var context = _contextFactory.CreateDbContext();
 
             if (_settings != null)
             {
@@ -96,7 +99,7 @@ public partial class SettingsPage : Page
                     settingsToUpdate.NextInvoiceNumber = nextInvoiceNumber;
                     settingsToUpdate.DefaultPaymentTermsDays = paymentTerms;
                     settingsToUpdate.DefaultGSTRate = gstRatePercent / 100;
-                    settingsToUpdate.ModifiedDate = DateTime.Now;
+                    settingsToUpdate.ModifiedDate = DateTimeProvider.UtcNow;
                 }
             }
 

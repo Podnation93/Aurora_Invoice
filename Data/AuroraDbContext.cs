@@ -1,6 +1,7 @@
 using System.IO;
 using Microsoft.EntityFrameworkCore;
 using AuroraInvoice.Models;
+using AuroraInvoice.Common;
 
 namespace AuroraInvoice.Data;
 
@@ -31,10 +32,16 @@ public class AuroraDbContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            var dbPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "AuroraInvoice",
-                "aurora_invoice.db");
+            var config = AppConfiguration.Instance.Database;
+            var dbPath = config.FilePath;
+
+            if (string.IsNullOrWhiteSpace(dbPath))
+            {
+                dbPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "AuroraInvoice",
+                    "aurora_invoice.db");
+            }
 
             // Ensure directory exists
             var directory = Path.GetDirectoryName(dbPath);
@@ -43,11 +50,10 @@ public class AuroraDbContext : DbContext
                 Directory.CreateDirectory(directory);
             }
 
-            // Improved connection string for better concurrency
-            optionsBuilder.UseSqlite($"Data Source={dbPath};Cache=Shared;Mode=ReadWriteCreate");
+            var connectionString = $"Data Source={dbPath};{config.ConnectionString}";
+            optionsBuilder.UseSqlite(connectionString);
         }
     }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

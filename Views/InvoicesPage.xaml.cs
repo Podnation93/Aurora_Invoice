@@ -16,11 +16,11 @@ public partial class InvoicesPage : Page
     private readonly ICustomerService _customerService;
     private List<Invoice> _allInvoices = new();
 
-    public InvoicesPage()
+    public InvoicesPage(IInvoiceService invoiceService, ICustomerService customerService)
     {
         InitializeComponent();
-        _invoiceService = new InvoiceService();
-        _customerService = new CustomerService();
+        _invoiceService = invoiceService;
+        _customerService = customerService;
         Loaded += InvoicesPage_Loaded;
     }
 
@@ -114,7 +114,8 @@ public partial class InvoicesPage : Page
             return;
         }
 
-        var dialog = new InvoiceDialog(customers);
+        var nextInvoiceNumber = await _invoiceService.GetNextInvoiceNumberAsync();
+        var dialog = new InvoiceDialog(customers, nextInvoiceNumber);
         if (dialog.ShowDialog() == true)
         {
             await LoadInvoicesAsync();

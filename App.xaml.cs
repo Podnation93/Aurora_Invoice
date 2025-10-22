@@ -1,50 +1,85 @@
 ﻿using System.Collections.Concurrent;
-using System.Windows;
-using AuroraInvoice.Data;
-using AuroraInvoice.Models;
-using AuroraInvoice.Services;
-using AuroraInvoice.Common;
-using QuestPDF.Infrastructure;
-
-namespace AuroraInvoice;
-
-/// <summary>
-/// Interaction logic for App.xaml
-/// </summary>
-public partial class App : Application
-{
-    private static readonly ConcurrentQueue<ErrorLog> _errorQueue = new();
-    private static CancellationTokenSource? _errorProcessingCts;
-
-    protected override async void OnStartup(StartupEventArgs e)
-    {
-        base.OnStartup(e);
-
-        // Set up global exception handlers
-        SetupExceptionHandlers();
-
-        // Start error queue processor
-        _errorProcessingCts = new CancellationTokenSource();
-        _ = Task.Run(() => ProcessErrorQueueAsync(_errorProcessingCts.Token));
-
-        // Configure QuestPDF license (Community license for open-source projects)
-        QuestPDF.Settings.License = LicenseType.Community;
-
-        // Initialize database
-        await InitializeDatabaseAsync();
-    }
-
-    protected override void OnExit(ExitEventArgs e)
-    {
-        // Stop error processing and wait for queue to flush
-        _errorProcessingCts?.Cancel();
-
-        // Give it a moment to flush remaining errors
-        Thread.Sleep(500);
-
-        base.OnExit(e);
-    }
-
+﻿using System.Windows;
+﻿using AuroraInvoice.Data;
+﻿using AuroraInvoice.Models;
+﻿using AuroraInvoice.Services;
+﻿using AuroraInvoice.Common;
+﻿using AuroraInvoice.Services.Interfaces;
+﻿using AuroraInvoice.Views;
+﻿using Microsoft.Extensions.DependencyInjection;
+﻿using QuestPDF.Infrastructure;
+﻿
+﻿namespace AuroraInvoice;
+﻿
+﻿/// <summary>
+﻿/// Interaction logic for App.xaml
+﻿/// </summary>
+﻿public partial class App : Application
+﻿{
+﻿    private static readonly ConcurrentQueue<ErrorLog> _errorQueue = new();
+﻿    private static CancellationTokenSource? _errorProcessingCts;
+﻿    private static Task? _errorProcessingTask;
+﻿
+﻿    public static IServiceProvider ServiceProvider { get; private set; } = null!;
+﻿
+﻿    protected override async void OnStartup(StartupEventArgs e)
+﻿    {
+﻿        base.OnStartup(e);
+﻿
+﻿        var services = new ServiceCollection();
+﻿        ConfigureServices(services);
+﻿        ServiceProvider = services.BuildServiceProvider();
+﻿
+﻿        // Set up global exception handlers
+﻿        SetupExceptionHandlers();
+﻿
+﻿        // Start error queue processor
+﻿        _errorProcessingCts = new CancellationTokenSource();
+﻿        _errorProcessingTask = Task.Run(() => ProcessErrorQueueAsync(_errorProcessingCts.Token));
+﻿
+﻿        // Configure QuestPDF license (Community license for open-source projects)
+﻿        QuestPDF.Settings.License = LicenseType.Community;
+﻿
+﻿        // Initialize database
+﻿        await InitializeDatabaseAsync();
+﻿    }
+﻿
+﻿    private void ConfigureServices(IServiceCollection services)
+﻿    {
+﻿        services.AddDbContextFactory<AuroraDbContext>();
+﻿
+﻿        // Register services
+﻿        services.AddSingleton<IAuditService, AuditService>();
+﻿        services.AddSingleton<ISettingsService, SettingsService>();
+﻿        services.AddSingleton<GstCalculationService>();
+﻿        services.AddSingleton<DatabaseService>();
+﻿        services.AddSingleton<BackupService>();
+﻿
+﻿        services.AddTransient<ICustomerService, CustomerService>();
+﻿        services.AddTransient<IInvoiceService, InvoiceService>();
+﻿        services.AddTransient<IDashboardService, DashboardService>();
+﻿
+﻿        // Register pages
+﻿        services.AddTransient<DashboardPage>();
+﻿        services.AddTransient<InvoicesPage>();
+﻿        services.AddTransient<CustomersPage>();
+﻿        services.AddTransient<ExpensesPage>();
+﻿        services.AddTransient<ReportsPage>();
+﻿        services.AddTransient<SettingsPage>();
+﻿        services.AddTransient<BackupPage>();
+﻿        services.AddTransient<ErrorLogsPage>();
+﻿    }
+﻿
+﻿    protected override void OnExit(ExitEventArgs e)
+﻿    {            // Stop error processing and wait for queue to flush
+            if (_errorProcessingCts != null)
+            {
+                _errorProcessingCts.Cancel();
+                _errorProcessingTask?.Wait(); // Wait for the task to complete
+            }
+    
+            base.OnExit(e);
+        }
     private void SetupExceptionHandlers()
     {
         // Handle unhandled exceptions in the UI thread

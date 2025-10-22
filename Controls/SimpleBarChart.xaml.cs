@@ -47,6 +47,8 @@ public partial class SimpleBarChart : UserControl
         var x = 20.0;
 
         var colors = new[] { "#3b82f6", "#8b5cf6", "#10b981", "#f59e0b", "#ef4444", "#06b6d4" };
+        if (colors.Length == 0) return;
+
         var colorIndex = 0;
 
         foreach (var item in Data)

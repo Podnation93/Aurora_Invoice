@@ -11,10 +11,10 @@ public partial class DashboardPage : Page
 {
     private readonly IDashboardService _dashboardService;
 
-    public DashboardPage()
+    public DashboardPage(IDashboardService dashboardService)
     {
         InitializeComponent();
-        _dashboardService = new DashboardService();
+        _dashboardService = dashboardService;
         Loaded += DashboardPage_Loaded;
     }
 

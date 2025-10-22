@@ -7,8 +7,7 @@ namespace AuroraInvoice.Common;
 /// </summary>
 public class AppConfiguration
 {
-    private static AppConfiguration? _instance;
-    private static readonly object _lock = new();
+    private static readonly Lazy<AppConfiguration> _lazyInstance = new(() => LoadConfiguration());
 
     public DatabaseConfiguration Database { get; set; } = new();
     public LoggingConfiguration Logging { get; set; } = new();
@@ -21,23 +20,7 @@ public class AppConfiguration
     /// <summary>
     /// Gets the singleton instance of AppConfiguration
     /// </summary>
-    public static AppConfiguration Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                lock (_lock)
-                {
-                    if (_instance == null)
-                    {
-                        _instance = LoadConfiguration();
-                    }
-                }
-            }
-            return _instance;
-        }
-    }
+    public static AppConfiguration Instance => _lazyInstance.Value;
 
     /// <summary>
     /// Loads configuration from appsettings.json
@@ -53,17 +36,6 @@ public class AppConfiguration
         configuration.Bind(appConfig);
 
         return appConfig;
-    }
-
-    /// <summary>
-    /// Reloads configuration from appsettings.json
-    /// </summary>
-    public static void Reload()
-    {
-        lock (_lock)
-        {
-            _instance = LoadConfiguration();
-        }
     }
 }
 

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using AuroraInvoice.Common;
 
 namespace AuroraInvoice.Models;
 
@@ -58,7 +59,7 @@ public class AppSettings
     [MaxLength(50)]
     public string? AccentColor { get; set; } = "#7c3aed"; // Purple
 
-    public DateTime CreatedDate { get; set; } = DateTime.Now;
+    public DateTime CreatedDate { get; set; } = DateTimeProvider.UtcNow;
 
     public DateTime? ModifiedDate { get; set; }
 }

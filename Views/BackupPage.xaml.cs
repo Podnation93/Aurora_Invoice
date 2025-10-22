@@ -12,12 +12,11 @@ public partial class BackupPage : Page
     private readonly BackupService _backupService;
     private string _backupFolderPath;
 
-    public BackupPage()
+    public BackupPage(DatabaseService dbService, BackupService backupService)
     {
         InitializeComponent();
-        using var context = new AuroraDbContext();
-        _dbService = new DatabaseService(context);
-        _backupService = new BackupService(_dbService);
+        _dbService = dbService;
+        _backupService = backupService;
 
         _backupFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "AuroraInvoice Backups");
 

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using AuroraInvoice.Common;
 
 namespace AuroraInvoice.Models;
 
@@ -8,7 +9,7 @@ public class ErrorLog
     public int Id { get; set; }
 
     [Required]
-    public DateTime Timestamp { get; set; } = DateTime.Now;
+    public DateTime Timestamp { get; set; } = DateTimeProvider.UtcNow;
 
     [Required]
     [MaxLength(50)]

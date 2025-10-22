@@ -3,17 +3,22 @@ using System.Windows.Controls;
 using Microsoft.EntityFrameworkCore;
 using AuroraInvoice.Data;
 using AuroraInvoice.Models;
+using AuroraInvoice.Common;
 
 namespace AuroraInvoice.Views;
 
 public partial class ExpensesPage : Page
 {
+    private readonly IDbContextFactory<AuroraDbContext> _contextFactory;
+    private readonly ISettingsService _settingsService;
     private List<Expense> _allExpenses = new();
     private List<ExpenseCategory> _categories = new();
 
-    public ExpensesPage()
+    public ExpensesPage(IDbContextFactory<AuroraDbContext> contextFactory, ISettingsService settingsService)
     {
         InitializeComponent();
+        _contextFactory = contextFactory;
+        _settingsService = settingsService;
         Loaded += ExpensesPage_Loaded;
     }
 
@@ -25,7 +30,7 @@ public partial class ExpensesPage : Page
 
     private async Task LoadCategoriesAsync()
     {
-        using var context = new AuroraDbContext();
+        using var context = _contextFactory.CreateDbContext();
         _categories = await context.ExpenseCategories
             .Where(c => c.IsActive)
             .OrderBy(c => c.Name)
@@ -45,9 +50,9 @@ public partial class ExpensesPage : Page
     {
         try
         {
-            using var context = new AuroraDbContext();
+            using var context = _contextFactory.CreateDbContext();
 
-            var now = DateTime.Now;
+            var now = DateTimeProvider.UtcNow;
             var firstDay = new DateTime(now.Year, now.Month, 1);
             var lastDay = firstDay.AddMonths(1).AddDays(-1);
 
@@ -100,8 +105,7 @@ public partial class ExpensesPage : Page
         }
 
         if (CategoryFilterComboBox.SelectedIndex > 0)
-        {
-            var selectedItem = CategoryFilterComboBox.SelectedItem as ComboBoxItem;
+        {            var selectedItem = CategoryFilterComboBox.SelectedItem as ComboBoxItem;
             var categoryId = (int)selectedItem!.Tag;
             filtered = filtered.Where(e => e.CategoryId == categoryId);
         }
@@ -111,7 +115,7 @@ public partial class ExpensesPage : Page
 
     private void NewExpense_Click(object sender, RoutedEventArgs e)
     {
-        var dialog = new ExpenseDialog(_categories);
+        var dialog = new ExpenseDialog(_categories, _contextFactory, _settingsService);
         if (dialog.ShowDialog() == true)
         {
             _ = LoadExpensesAsync();
@@ -122,7 +126,7 @@ public partial class ExpensesPage : Page
     {
         if (sender is Button button && button.Tag is Expense expense)
         {
-            var dialog = new ExpenseDialog(expense, _categories);
+            var dialog = new ExpenseDialog(expense, _categories, _contextFactory, _settingsService);
             if (dialog.ShowDialog() == true)
             {
                 _ = LoadExpensesAsync();
@@ -144,7 +148,7 @@ public partial class ExpensesPage : Page
             {
                 try
                 {
-                    using var context = new AuroraDbContext();
+                    using var context = _contextFactory.CreateDbContext();
                     context.Expenses.Remove(expense);
                     await context.SaveChangesAsync();
 

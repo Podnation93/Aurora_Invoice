@@ -11,18 +11,18 @@ namespace AuroraInvoice.Views;
 public partial class CustomersPage : Page
 {
     private readonly ICustomerService _customerService;
+    private readonly IDbContextFactory<AuroraDbContext> _contextFactory;
     private int _currentPage = 1;
     private readonly int _pageSize = AppConstants.DefaultPageSize;
     private int _totalCount = 0;
     private string _currentSearchText = string.Empty;
 
-    public CustomersPage()
+    public CustomersPage(ICustomerService customerService, IDbContextFactory<AuroraDbContext> contextFactory)
     {
         InitializeComponent();
 
-        // Initialize services
-        var auditService = new AuditService();
-        _customerService = new CustomerService(auditService);
+        _customerService = customerService;
+        _contextFactory = contextFactory;
 
         Loaded += CustomersPage_Loaded;
     }
@@ -78,7 +78,7 @@ public partial class CustomersPage : Page
 
     private void NewCustomer_Click(object sender, RoutedEventArgs e)
     {
-        var dialog = new CustomerDialog();
+        var dialog = new CustomerDialog(_contextFactory);
         if (dialog.ShowDialog() == true)
         {
             _ = LoadCustomersAsync();
@@ -89,7 +89,7 @@ public partial class CustomersPage : Page
     {
         if (sender is Button button && button.Tag is Customer customer)
         {
-            var dialog = new CustomerDialog(customer);
+            var dialog = new CustomerDialog(customer, _contextFactory);
             if (dialog.ShowDialog() == true)
             {
                 _ = LoadCustomersAsync();
@@ -158,7 +158,7 @@ public partial class CustomersPage : Page
     {
         if (CustomersGrid.SelectedItem is Customer customer)
         {
-            var dialog = new CustomerDialog(customer);
+            var dialog = new CustomerDialog(customer, _contextFactory);
             if (dialog.ShowDialog() == true)
             {
                 _ = LoadCustomersAsync();

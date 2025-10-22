@@ -6,19 +6,22 @@ namespace AuroraInvoice.Views;
 
 public partial class CustomerDialog : Window
 {
+    private readonly IDbContextFactory<AuroraDbContext> _contextFactory;
     private Customer? _customer;
     private bool _isEditMode;
 
-    public CustomerDialog()
+    public CustomerDialog(IDbContextFactory<AuroraDbContext> contextFactory)
     {
         InitializeComponent();
+        _contextFactory = contextFactory;
         _isEditMode = false;
         HeaderText.Text = "New Customer";
     }
 
-    public CustomerDialog(Customer customer)
+    public CustomerDialog(Customer customer, IDbContextFactory<AuroraDbContext> contextFactory)
     {
         InitializeComponent();
+        _contextFactory = contextFactory;
         _customer = customer;
         _isEditMode = true;
         HeaderText.Text = "Edit Customer";
@@ -45,7 +48,7 @@ public partial class CustomerDialog : Window
 
         try
         {
-            using var context = new AuroraDbContext();
+            using var context = _contextFactory.CreateDbContext();
 
             if (_isEditMode && _customer != null)
             {
@@ -59,7 +62,7 @@ public partial class CustomerDialog : Window
                     customerToUpdate.Phone = PhoneTextBox.Text.Trim();
                     customerToUpdate.ABN = ABNTextBox.Text.Trim();
                     customerToUpdate.Address = AddressTextBox.Text.Trim();
-                    customerToUpdate.ModifiedDate = DateTime.Now;
+                    customerToUpdate.ModifiedDate = DateTimeProvider.UtcNow;
                 }
             }
             else
@@ -73,7 +76,7 @@ public partial class CustomerDialog : Window
                     Phone = PhoneTextBox.Text.Trim(),
                     ABN = ABNTextBox.Text.Trim(),
                     Address = AddressTextBox.Text.Trim(),
-                    CreatedDate = DateTime.Now
+                    CreatedDate = DateTimeProvider.UtcNow
                 };
 
                 context.Customers.Add(newCustomer);

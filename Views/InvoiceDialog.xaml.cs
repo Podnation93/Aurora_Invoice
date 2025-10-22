@@ -12,18 +12,20 @@ namespace AuroraInvoice.Views;
 
 public partial class InvoiceDialog : Window
 {
+    private readonly IDbContextFactory<AuroraDbContext> _contextFactory;
+    private readonly ISettingsService _settingsService;
     private Invoice? _invoice;
     private bool _isEditMode;
     private List<Customer> _customers;
     private ObservableCollection<InvoiceItem> _items = new();
     private readonly GstCalculationService _gstService;
-    private readonly ISettingsService _settingsService;
 
-    public InvoiceDialog(List<Customer> customers)
+    public InvoiceDialog(List<Customer> customers, string nextInvoiceNumber, IDbContextFactory<AuroraDbContext> contextFactory, ISettingsService settingsService)
     {
         InitializeComponent();
         _customers = customers;
-        _settingsService = new SettingsService();
+        _contextFactory = contextFactory;
+        _settingsService = settingsService;
         _gstService = new GstCalculationService(_settingsService);
         _isEditMode = false;
         HeaderText.Text = "New Invoice";
@@ -36,15 +38,16 @@ public partial class InvoiceDialog : Window
 
         InvoiceDatePicker.SelectedDate = DateTimeProvider.ToLocalTime(DateTimeProvider.UtcNow);
         DueDatePicker.SelectedDate = DateTimeProvider.ToLocalTime(DateTimeProvider.UtcNow.AddDays(AppConstants.DefaultPaymentTermsDays));
-        GenerateInvoiceNumber();
+        InvoiceNumberTextBox.Text = nextInvoiceNumber;
     }
 
-    public InvoiceDialog(Invoice invoice, List<Customer> customers)
+    public InvoiceDialog(Invoice invoice, List<Customer> customers, IDbContextFactory<AuroraDbContext> contextFactory, ISettingsService settingsService)
     {
         InitializeComponent();
         _invoice = invoice;
         _customers = customers;
-        _settingsService = new SettingsService();
+        _contextFactory = contextFactory;
+        _settingsService = settingsService;
         _gstService = new GstCalculationService(_settingsService);
         _isEditMode = true;
         HeaderText.Text = "Edit Invoice";
@@ -55,20 +58,6 @@ public partial class InvoiceDialog : Window
         LoadInvoiceData();
     }
 
-    private async void GenerateInvoiceNumber()
-    {
-        using var context = new AuroraDbContext();
-        var settings = await context.AppSettings.FirstOrDefaultAsync();
-
-        if (settings != null)
-        {
-            InvoiceNumberTextBox.Text = $"{settings.InvoicePrefix}{settings.NextInvoiceNumber:D4}";
-        }
-        else
-        {
-            InvoiceNumberTextBox.Text = "INV-0001";
-        }
-    }
 
     private async void LoadInvoiceData()
     {
@@ -220,9 +209,7 @@ public partial class InvoiceDialog : Window
             return;
         }
 
-        try
-        {
-            using var context = new AuroraDbContext();
+            using var context = _contextFactory.CreateDbContext();
             using var transaction = await context.Database.BeginTransactionAsync();
 
             try
