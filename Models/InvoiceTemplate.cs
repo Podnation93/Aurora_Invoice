@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using AuroraInvoice.Common;
 
 namespace AuroraInvoice.Models;
 
@@ -85,6 +86,6 @@ public class InvoiceTemplate
 
     public bool IsDefault { get; set; } = false;
 
-    public DateTime CreatedDate { get; set; } = DateTime.Now;
+    public DateTime CreatedDate { get; set; } = DateTimeProvider.UtcNow;
     public DateTime? ModifiedDate { get; set; }
 }
